@@ -1,0 +1,2245 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StockGym — Practice trading on historical charts · Luyện giao dịch trên nến lịch sử</title>
+<meta name="description" content="Free trading simulator on real historical candles: S&amp;P 500, Nasdaq, Dow, gold, silver, US stocks, forex, Bitcoin, VN30 futures and Vietnam (HSX) stocks. The future is hidden; step candle by candle, place orders with stop loss and take profit, trade a basket of stocks, then review your session summary. — Luyện giao dịch miễn phí trên nến lịch sử thật: VN30F1M, cổ phiếu HSX, S&amp;P 500, Nasdaq, Dow, vàng, bạc, cổ phiếu Mỹ, ngoại tệ, Bitcoin. Che tương lai, tiến từng nến, đặt lệnh có cắt lỗ / chốt lời, chơi cả rổ cổ phiếu, xem bảng tổng kết phiên.">
+<meta name="description" lang="en" content="Free trading simulator on real historical candles: S&amp;P 500, Nasdaq, Dow, gold, silver, US stocks, forex, Bitcoin, VN30 futures and Vietnam (HSX) stocks. The future is hidden; step candle by candle, place orders with stop loss and take profit, trade a basket of stocks, then review your session summary.">
+<meta name="description" lang="vi" content="Luyện giao dịch miễn phí trên nến lịch sử thật: VN30F1M, cổ phiếu HSX, S&amp;P 500, Nasdaq, Dow, vàng, bạc, cổ phiếu Mỹ, ngoại tệ, Bitcoin. Che tương lai, tiến từng nến, đặt lệnh có cắt lỗ / chốt lời, chơi cả rổ cổ phiếu, xem bảng tổng kết phiên.">
+<link rel="canonical" href="https://stockgym.github.io/">
+<link rel="alternate" hreflang="en" href="https://stockgym.github.io/?lang=en">
+<link rel="alternate" hreflang="vi" href="https://stockgym.github.io/?lang=vi">
+<link rel="alternate" hreflang="x-default" href="https://stockgym.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="StockGym">
+<meta property="og:title" content="StockGym — Practice trading on historical charts · Luyện giao dịch trên nến lịch sử">
+<meta property="og:description" content="Free trading simulator on real historical candles: S&amp;P 500, Nasdaq, Dow, gold, silver, US stocks, forex, Bitcoin, VN30 futures and Vietnam (HSX) stocks. The future is hidden; step candle by candle, place orders with stop loss and take profit, trade a basket of stocks, then review your session summary. — Luyện giao dịch miễn phí trên nến lịch sử thật: VN30F1M, cổ phiếu HSX, S&amp;P 500, Nasdaq, Dow, vàng, bạc, cổ phiếu Mỹ, ngoại tệ, Bitcoin. Che tương lai, tiến từng nến, đặt lệnh có cắt lỗ / chốt lời, chơi cả rổ cổ phiếu, xem bảng tổng kết phiên.">
+<meta property="og:url" content="https://stockgym.github.io/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="vi_VN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="StockGym — Practice trading on historical charts · Luyện giao dịch trên nến lịch sử">
+<meta name="twitter:description" content="Free trading simulator on real historical candles: S&amp;P 500, Nasdaq, Dow, gold, silver, US stocks, forex, Bitcoin, VN30 futures and Vietnam (HSX) stocks. The future is hidden; step candle by candle, place orders with stop loss and take profit, trade a basket of stocks, then review your session summary.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23161d26'/%3E%3Crect x='7' y='12' width='5' height='10' fill='%2326a69a'/%3E%3Crect x='13.5' y='8' width='5' height='9' fill='%23ef5350'/%3E%3Crect x='20' y='6' width='5' height='11' fill='%2326a69a'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0f141b; --panel:#161d26; --raised:#1d2631; --line:#2a3542; --line2:#222c37;
+  --ink:#d8e0e8; --ink2:#93a1ae; --ink3:#66737f;
+  --up:#26a69a; --down:#ef5350; --accent:#4c9be8; --warn:#e0a43a;
+  --buy:#1f8f6a; --sell:#c94442;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,"Segoe UI",sans-serif}
+body{overflow-x:hidden}
+button,select,input,textarea{font:inherit;color:inherit}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh}
+
+/* ---- thanh trên ---- */
+#top{display:flex;gap:8px;align-items:center;padding:6px 10px;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap;flex:none}
+.grp{display:flex;gap:4px;align-items:center;flex:none}
+.sp{flex:1 0 0}
+.brand{font-weight:800;letter-spacing:.3px;color:var(--ink);font-size:17px;padding:0 4px;white-space:nowrap;flex:none}
+.brand b{color:var(--up)}
+.b{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:0 12px;background:var(--raised);border:1px solid var(--line);border-radius:7px;cursor:pointer;white-space:nowrap;font-size:14px;line-height:1.1}
+.b:hover{border-color:var(--ink3)}
+.b.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.b:disabled{opacity:.4;cursor:default}
+.b.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.b.pri:hover{background:#5fa9f0}
+.b.warn{border-color:var(--warn);color:var(--warn);font-weight:700}
+.b.warn:hover{background:rgba(224,164,58,.12)}
+.b.mini{min-height:28px;padding:0 8px;font-size:12px}
+.b.sq{padding:0;min-width:36px}
+.seg{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px;gap:2px}
+.seg .b{border:0;background:transparent;min-height:30px;padding:0 10px;border-radius:6px;color:var(--ink2)}
+.seg .b:hover{color:var(--ink)}
+.seg .b.on{background:var(--accent);color:#fff;font-weight:600}
+select,input[type=number],input[type=text],input[type=date],input[type=datetime-local],textarea{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:0 8px;min-height:36px;min-width:0}
+textarea{padding:8px;width:100%;resize:vertical;line-height:1.4}
+select:focus,input:focus,textarea:focus,.b:focus-visible,.cta:focus-visible,.big:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+input[type=number]{width:104px}
+input[type=checkbox]{width:17px;height:17px;vertical-align:-3px;accent-color:var(--accent)}
+#symSel{font-weight:700;max-width:170px}
+
+/* ---- chart ---- */
+#main{flex:1;display:flex;min-height:0}
+#cw{flex:1;position:relative;min-width:0;overflow:hidden}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+#legend{position:absolute;left:8px;top:6px;font:12px var(--mono);color:var(--ink2);pointer-events:none;white-space:nowrap}
+#legend b{color:var(--ink)}
+#banner{position:absolute;left:50%;top:28px;transform:translateX(-50%);background:rgba(224,164,58,.15);border:1px solid var(--warn);color:var(--warn);padding:2px 10px;border-radius:5px;font-size:12px;pointer-events:none;display:none;white-space:nowrap;max-width:96%;overflow:hidden;text-overflow:ellipsis}
+#toast{position:fixed;left:50%;top:112px;transform:translateX(-50%);z-index:30;background:#263243;border:1px solid var(--ink3);padding:9px 16px;border-radius:8px;display:none;max-width:92vw;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.5);font-size:14px}
+#credit{position:absolute;right:78px;top:22px;font-size:11px;color:var(--ink2);opacity:.8;pointer-events:none;white-space:nowrap;z-index:1}
+body.tr #creditN{display:none}
+#feeNote{position:absolute;right:78px;top:54px;font-size:11px;color:var(--warn);opacity:.95;pointer-events:none;white-space:nowrap;z-index:1;text-align:right;line-height:1.35}
+@media (max-width:820px){#credit{top:auto;bottom:30px}#feeNote{top:50px;right:8px;left:8px;white-space:normal;font-size:10.5px}}
+#cnav{position:absolute;left:8px;bottom:30px;display:flex;gap:4px;z-index:2;opacity:.75}
+#cnav:hover{opacity:1}
+#fab{position:absolute;left:50%;bottom:46px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:3;pointer-events:none;width:max-content;max-width:94%}
+#fab>*{pointer-events:auto}
+#fabSub{background:rgba(15,20,27,.88);border:1px solid var(--line);padding:3px 12px;border-radius:12px;font-size:12.5px;color:var(--ink2);text-align:center}
+.cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 34px;font-size:18px;font-weight:800;border-radius:28px;border:0;background:var(--accent);color:#fff;cursor:pointer;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.55),0 0 0 5px rgba(76,155,232,.2)}
+.cta:hover{background:#5fa9f0}
+.cta.wide{width:100%;border-radius:10px;min-height:52px;font-size:17px;padding:0 10px;box-shadow:none;margin:10px 0 6px}
+
+/* ---- panel bên ---- */
+#side{width:356px;flex:none;border-left:1px solid var(--line);background:var(--panel);overflow-y:auto;padding:10px}
+h3{margin:2px 0 8px;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);font-weight:600}
+h3 .muted{text-transform:none;letter-spacing:0;font-weight:400}
+.box{background:var(--raised);border:1px solid var(--line2);border-radius:10px;padding:10px;margin-bottom:10px}
+details.box>summary{cursor:pointer;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);font-weight:600;min-height:24px;display:flex;align-items:center;gap:6px;list-style:none}
+details.box>summary::-webkit-details-marker{display:none}
+details.box>summary::before{content:'▸';color:var(--ink3)}
+details.box[open]>summary::before{content:'▾'}
+details.box[open]>summary{margin-bottom:8px}
+.row{display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.row>label:first-child{color:var(--ink2);min-width:78px}
+.row .grow{flex:1}
+.chk{display:flex;align-items:center;gap:7px;cursor:pointer;min-height:30px}
+.big{flex:1;min-height:50px;padding:0 8px;font-weight:800;font-size:16px;border-radius:9px;border:0;cursor:pointer;color:#fff;letter-spacing:.02em}
+.long{background:var(--buy)}.short{background:var(--sell)}
+.long:hover{background:#25a77c}.short:hover{background:#dd504d}
+.step1{flex:1 1 100%;min-height:54px;font-size:18px;font-weight:800;border-radius:10px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:13px}
+.kv span:nth-child(odd){color:var(--ink2)}
+.kv span:nth-child(even){font-family:var(--mono);text-align:right}
+.acct .lab{color:var(--ink2);font-size:12px}
+.acct .eq{font:800 27px/1.15 var(--mono);margin:1px 0 2px}
+.acct .pl{font:600 14px var(--mono);margin-bottom:8px}
+.pos{color:var(--up)}.neg{color:var(--down)}
+.muted{color:var(--ink3);font-size:12.5px}
+.center{text-align:center}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+td,th{padding:5px 4px;border-bottom:1px solid var(--line2);text-align:right;font-family:var(--mono);white-space:nowrap}
+th{color:var(--ink2);font-family:inherit;font-weight:500}
+td:first-child,th:first-child{text-align:left}
+tr.click{cursor:pointer}
+tr.click:hover td{background:rgba(76,155,232,.1)}
+tr.cur td{background:rgba(76,155,232,.14)}
+kbd{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:0 5px;font:12px var(--mono)}
+.foot{padding:2px 2px 12px}
+
+/* ---- menu thả ---- */
+.menu{display:none;position:fixed;z-index:9;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px;width:270px;max-width:calc(100vw - 8px);max-height:74vh;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.55)}
+.menu h4{margin:8px 8px 4px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.menu label{display:flex;gap:9px;align-items:center;padding:0 8px;min-height:34px;border-radius:6px;cursor:pointer}
+.menu label:hover{background:var(--raised)}
+.menu label i{width:10px;height:10px;border-radius:2px;flex:none}
+#tools{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+#tools .b{justify-content:flex-start;padding:0 8px;overflow:hidden;font-size:13px}
+#tools .b span{width:22px;text-align:center;flex:none}
+#colors{display:flex;gap:8px;padding:2px 8px 6px}
+.sw{width:26px;height:26px;border-radius:50%;border:3px solid transparent;cursor:pointer;padding:0}
+.sw.on{border-color:#fff}
+.mrow{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.mrow .b{justify-content:flex-start}
+
+/* ---- modal ---- */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:20;padding:8px}
+#mbox{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;width:min(560px,100%);max-height:94vh;max-height:94dvh;overflow:auto}
+#mbox.wide{width:min(900px,100%)}
+#mbox h2{margin:0 34px 6px 0;font-size:19px}
+#mbox p{margin:6px 0 10px;color:var(--ink2)}
+.mx{position:absolute;right:8px;top:8px;width:36px;height:36px;border-radius:8px;border:0;background:transparent;color:var(--ink2);font-size:20px;cursor:pointer}
+.mx:hover{background:var(--raised);color:var(--ink)}
+.netbig{font:800 30px/1.2 var(--mono);margin:4px 0 2px}
+.learncta{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:12px 14px;border:1px solid #6b5722;border-left:4px solid #e3b95a;border-radius:10px;background:linear-gradient(135deg,#2a2210,#1d2631 75%);color:var(--ink);text-decoration:none}
+.learncta:hover{border-color:#e3b95a}
+.learncta .ic{font-size:26px}
+.learncta .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.learncta .tx b{color:#f0cf7a;font-size:15px}
+.learncta .tx span{color:var(--ink2);font-size:13px;line-height:1.45}
+.learncta .go{white-space:nowrap;font-weight:700;color:#2a1e03;background:#e3b95a;border-radius:8px;padding:7px 11px;font-size:13px}
+@media (max-width:640px){.learncta{flex-wrap:wrap}.learncta .go{margin-left:38px}}
+.mbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.mbtns .b{flex:1 1 140px;min-height:44px}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:12px 0}
+.stat{background:var(--raised);border:1px solid var(--line2);border-radius:8px;padding:7px 10px;min-width:0}
+.stat small{display:block;color:var(--ink2);font-size:12px}
+.stat b{font:700 14.5px var(--mono);overflow-wrap:anywhere}
+#eqCv{display:block;width:100%;height:200px;background:var(--bg);border:1px solid var(--line2);border-radius:8px}
+.lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin:10px 0 4px}
+.lg i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+/* hướng dẫn */
+.onbTop{display:flex;justify-content:space-between;align-items:center;margin-right:36px}
+.ill{height:118px;margin:12px 0;border-radius:10px;background:var(--bg);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;gap:12px;font-size:15px;overflow:hidden}
+.ill .em{font-size:44px;line-height:1}
+.ill .chip{padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--raised);white-space:nowrap}
+.ill .chip.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.ill .pill{padding:10px 20px;border-radius:22px;background:var(--accent);color:#fff;font-weight:800;white-space:nowrap}
+.ill .buy{background:var(--buy);border-color:var(--buy);color:#fff;font-weight:700}
+.ill .sell{background:var(--sell);border-color:var(--sell);color:#fff;font-weight:700}
+.cdl{display:flex;align-items:flex-end;gap:5px;height:76px}
+.cdl i{width:9px;border-radius:2px;background:var(--up)}
+.cdl i.d{background:var(--down)}
+.cdl i.h{background:repeating-linear-gradient(45deg,var(--line),var(--line) 3px,transparent 3px,transparent 6px)}
+.dots{display:flex;gap:6px;justify-content:center;margin:12px 0 2px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)}
+/* góp ý */
+.stars{display:flex;gap:2px;margin:4px 0 6px}
+.stars button{font-size:30px;line-height:1;background:none;border:0;color:var(--ink3);cursor:pointer;min-width:44px;min-height:44px;border-radius:8px}
+.stars button.on{color:var(--warn)}
+#fbMsg{margin-top:8px;min-height:18px;font-size:13.5px;color:var(--ink)}
+#fbMsg a{color:var(--accent)}
+code{font:12px var(--mono);color:var(--ink2)}
+
+#mbar{display:none}
+#bQuitTop{display:none;flex:none;white-space:nowrap;margin-left:auto}
+body.tr #bQuitTop{display:inline-flex;align-items:center;position:sticky;right:0;z-index:2;background:var(--panel);box-shadow:-8px 0 8px var(--panel)}
+@media (max-width:1180px){#top{gap:6px}.b{padding:0 9px}.seg .b{padding:0 7px}#symSel{max-width:140px}.brand{font-size:15px}}
+@media (max-width:640px){.brand{display:none}}
+@media (max-width:820px){
+  html,body{height:auto}
+  #app{height:auto;min-height:100vh}
+  #top{padding:6px 8px;gap:6px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+  #top::-webkit-scrollbar{display:none}
+  .b,select,input[type=number],input[type=text],input[type=date],input[type=datetime-local]{min-height:44px}
+  .b.mini{min-height:44px;min-width:44px}
+  .b.sq{min-width:44px}
+  .seg .b{min-height:44px;padding:0 11px}
+  .sp{display:none}
+  #main{flex-direction:column}
+  #cw{height:58vh;min-height:55vh;flex:none}
+  #side{width:auto;border-left:0;border-top:1px solid var(--line)}
+  #banner{top:26px;font-size:11px}
+  #legend{font-size:11px;right:8px;overflow:hidden;text-overflow:ellipsis}
+  #cnav{bottom:28px}
+  #fab{bottom:84px}
+  #fabSub{pointer-events:none}
+  .cta{min-height:54px;font-size:17px;padding:0 26px}
+  .menu label{min-height:44px}
+  .sw{width:34px;height:34px}
+  body.tr #mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:5;gap:5px;align-items:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:var(--panel);border-top:1px solid var(--line)}
+  #mbar .b{padding:0 10px;min-height:46px;font-size:15px;font-weight:700}
+  #mbar .big{min-height:46px;padding:0 4px;font-size:14px;min-width:0;overflow:hidden}
+  #mpos{font:12px var(--mono);min-width:52px;text-align:center;overflow:hidden}
+  body.tr #app{padding-bottom:62px}
+  #mbox{padding:14px 14px}
+  .mx{width:44px;height:44px;right:4px;top:4px}
+  .netbig{font-size:25px}
+  .stats{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+  #eqCv{height:170px}
+}
+@media (max-width:400px){
+  #mbar{gap:4px}
+  #mbar .b{padding:0 7px}
+  #mbar .big{font-size:13px;letter-spacing:0;padding:0 2px}
+  #mpos{min-width:46px;font-size:11px}
+}
+.ill{flex-wrap:wrap;height:auto;min-height:118px;padding:10px}
+</style>
+<script>
+/* ===== StockGym: bảng mã, ngôn ngữ ===== */
+const VERSION = '2.2';
+/* góp ý người dùng: gform = URL …/formResponse của Google Form (để trống -> mở GitHub issue điền sẵn); entry = tên các ô entry.xxx của form */
+const FEEDBACK = {gform: '', entry: {rating: '', type: '', text: '', contact: '', ctx: ''}, issues: 'https://github.com/stockgym/stockgym.github.io/issues/new'};
+const FX_VND0 = 26000;                       // chỉ dùng để hiện dòng quy đổi VNĐ ở giao diện tiếng Việt
+const L2 = (vi, en) => ({vi, en});
+/* cls: deriv | stock · cur: tiền của mã · mult: tiền / 1 đơn vị giá / 1 đơn vị KL · lot: bước KL · mr: tỷ lệ ký quỹ
+   fee: comm = tiền của mã / đơn vị KL / chiều, slip = % giá trị / chiều, tax = % giá trị chỉ khi BÁN · qu: khóa i18n của đơn vị KL */
+const SYMS = {
+  xag:  {name: 'XAGUSD', cls: 'deriv', cur: '$', mult: 100, lot: 1, mr: 0.10, dp: 3, g: 'g_cmd', qu: 'u_ct', kind: 'xag', file: 'silver_base.js', f5: 'silver_5m.js',
+         lab: L2('Bạc futures, hợp đồng 100 oz', 'Silver futures, 100 oz contract'),
+         fee: {comm: 120000 / 26000, slip: 1.5 * (75000 / 26000) / (65 * 100) * 100, tax: 0}},
+  gc:   {name: 'GOLD', cls: 'deriv', cur: '$', mult: 10, lot: 1, mr: 0.06, dp: 1, g: 'g_cmd', qu: 'u_ct',
+         lab: L2('Vàng futures, Micro 10 oz', 'Gold futures, Micro 10 oz'), fee: {comm: 1.5, slip: 0.01, tax: 0}},
+  es:   {name: 'S&P 500', cls: 'deriv', cur: '$', mult: 5, lot: 1, mr: 0.06, dp: 2, g: 'g_idx', qu: 'u_ct',
+         lab: L2('S&P 500 futures (ES=F), Micro $5/điểm', 'S&P 500 futures (ES=F), Micro $5/point'), fee: {comm: 1, slip: 0.005, tax: 0}},
+  nq:   {name: 'NASDAQ 100', cls: 'deriv', cur: '$', mult: 2, lot: 1, mr: 0.06, dp: 2, g: 'g_idx', qu: 'u_ct',
+         lab: L2('Nasdaq 100 futures (NQ=F), Micro $2/điểm', 'Nasdaq 100 futures (NQ=F), Micro $2/point'), fee: {comm: 1, slip: 0.005, tax: 0}},
+  ym:   {name: 'DOW 30', cls: 'deriv', cur: '$', mult: 0.5, lot: 1, mr: 0.06, dp: 0, g: 'g_idx', qu: 'u_ct',
+         lab: L2('Dow Jones futures (YM=F), Micro $0,5/điểm', 'Dow Jones futures (YM=F), Micro $0.5/point'), fee: {comm: 1, slip: 0.005, tax: 0}},
+  eurusd: {name: 'EURUSD', cls: 'deriv', cur: '$', mult: 100000, lot: 0.1, mr: 0.03, dp: 5, g: 'g_fx', qu: 'u_lot',
+         lab: L2('EUR/USD, 1 lô = 100.000 EUR', 'EUR/USD, 1 lot = 100,000 EUR'), fee: {comm: 0, slip: 0.004, tax: 0}},
+  gbpusd: {name: 'GBPUSD', cls: 'deriv', cur: '$', mult: 100000, lot: 0.1, mr: 0.03, dp: 5, g: 'g_fx', qu: 'u_lot',
+         lab: L2('GBP/USD, 1 lô = 100.000 GBP', 'GBP/USD, 1 lot = 100,000 GBP'), fee: {comm: 0, slip: 0.005, tax: 0}},
+  audusd: {name: 'AUDUSD', cls: 'deriv', cur: '$', mult: 100000, lot: 0.1, mr: 0.03, dp: 5, g: 'g_fx', qu: 'u_lot',
+         lab: L2('AUD/USD, 1 lô = 100.000 AUD', 'AUD/USD, 1 lot = 100,000 AUD'), fee: {comm: 0, slip: 0.006, tax: 0}},
+  btc:  {name: 'BTCUSD', cls: 'deriv', cur: '$', mult: 1, lot: 0.01, mr: 0.5, dp: 2, g: 'g_cry', qu: 'u_btc',
+         lab: L2('Bitcoin (BTC-USD)', 'Bitcoin (BTC-USD)'), fee: {comm: 0, slip: 0.1, tax: 0}},
+  vn30: {name: 'VN30F1M', cls: 'deriv', cur: 'đ', mult: 100000, lot: 1, mr: 0.17, dp: 1, g: 'g_vn', qu: 'u_ct', kind: 'vn30', file: 'vn30_base.js', tf240: true,
+         lab: L2('Hợp đồng tương lai VN30 (VN30F1M), 100.000 đ/điểm', 'VN30 index futures (VN30F1M), 100,000 VND/point'), fee: {comm: 0, slip: 0.035, tax: 0}}};
+for (const [k, vi, en] of [['spy', 'SPDR S&P 500 ETF', 'SPDR S&P 500 ETF'], ['qqq', 'Invesco QQQ ETF', 'Invesco QQQ ETF'], ['aapl', 'Apple', 'Apple'], ['nvda', 'NVIDIA', 'NVIDIA'], ['tsla', 'Tesla', 'Tesla']])
+  SYMS[k] = {name: k.toUpperCase(), cls: 'stock', mkt: 'us', cur: '$', mult: 1, lot: 1, dp: 2, g: 'g_us', qu: 'u_sh', lab: L2(vi, en), fee: {comm: 0, slip: 0.01, tax: 0}};
+/* HSX: giá theo nghìn đồng, lô 100 cổ phiếu, phí 0,15%/chiều + thuế bán 0,1% */
+for (const [tk, nm] of [['VCB', 'Vietcombank'], ['BID', 'BIDV'], ['CTG', 'VietinBank'], ['TCB', 'Techcombank'], ['MBB', 'MB Bank'], ['VPB', 'VPBank'], ['ACB', 'ACB'], ['STB', 'Sacombank'],
+    ['HDB', 'HDBank'], ['SSI', 'SSI Securities'], ['HPG', 'Hoa Phat Group'], ['FPT', 'FPT Corp'], ['MWG', 'Mobile World'], ['VNM', 'Vinamilk'], ['MSN', 'Masan Group'], ['VIC', 'Vingroup'],
+    ['VHM', 'Vinhomes'], ['GAS', 'PV Gas'], ['PLX', 'Petrolimex'], ['PNJ', 'Phu Nhuan Jewelry'], ['REE', 'REE Corp'], ['GVR', 'Vietnam Rubber Group'], ['SAB', 'Sabeco'], ['VJC', 'Vietjet Air'],
+    ['DGC', 'Duc Giang Chemicals'], ['E1VFVN30', 'ETF VN30 (E1VFVN30)']])
+  SYMS['vn_' + tk.toLowerCase()] = {name: tk, cls: 'stock', mkt: 'vn', cur: 'đ', mult: 1000, lot: 100, dp: 2, g: 'g_hsx', qu: 'u_sh', tf240: true,
+    lab: L2(nm + ' — giá theo nghìn đồng', nm + ' — price in thousand VND'), fee: {comm: 0, slip: 0.15, tax: 0.1}};
+for (const k in SYMS){ const x = SYMS[k]; x.file = x.file || k + '.js'; x.kind = x.kind || 'std'; }
+const BASKET0 = {us: ['aapl', 'nvda', 'tsla', 'spy', 'qqq'], vn: ['vn_fpt', 'vn_hpg', 'vn_vcb', 'vn_mwg', 'vn_vnm']};
+const CAP0 = {'$': 10000, 'đ': 100000000};
+
+const I18N = {
+vi: {
+  dow: 'CN,T2,T3,T4,T5,T6,T7', tf_sess: 'Buổi',
+  g_cmd: 'Hàng hóa', g_idx: 'Chỉ số Mỹ (futures)', g_fx: 'Ngoại tệ', g_cry: 'Crypto', g_vn: 'Phái sinh Việt Nam', g_us: 'Cổ phiếu Mỹ', g_hsx: 'Cổ phiếu Việt Nam (HSX)',
+  u_ct: 'HĐ', u_lot: 'lô', u_btc: 'BTC', u_sh: 'cp',
+  brand_tt: 'StockGym — luyện giao dịch trên nến lịch sử', mode_deriv: 'Phái sinh', mode_stock: 'Cổ phiếu', mode_tt: 'Phái sinh: 1 mã, long/short, ký quỹ · Cổ phiếu: rổ nhiều mã, chỉ mua/bán',
+  sym_tt: 'Chọn mã', mag_tt: 'Nam châm: điểm vẽ bám vào O/H/L/C', del_tt: 'Xóa hình đang chọn (Delete)', clr_tt: 'Xóa hết hình vẽ',
+  ind_tt: 'Bật / tắt chỉ báo', ind_btn: 'Chỉ báo', go_tt: 'Nhảy tới ngày (khi chưa vào phiên)', go: 'Tới', end_tt: 'Về nến mới nhất', auto_tt: 'Tự co giãn trục giá (nhấp đúp trục giá cũng được)',
+  lang_tt: 'Ngôn ngữ',
+  start_h: 'Luyện tập', start_desc: 'Biểu đồ nhảy về 1 mốc trong quá khứ, phần sau bị che. Bấm tiến từng nến, tự quyết định vào lệnh / cắt lỗ / nhồi.',
+  cap_lab: 'Vốn', years_lab: 'Khoảng năm', blind_lab: 'Ẩn ngày tháng (chỉ hiện giờ)', or_from: 'Hoặc từ', b_start: 'Bắt đầu',
+  tf_note: 'Khung đang chọn trên thanh trên là khung bước nến. Có thể đổi khung giữa chừng; phần chưa tới vẫn bị che.',
+  bk_h: 'Rổ của bạn', bk_add: '+ Thêm', bk_th_sym: 'Mã', bk_th_px: 'Giá', bk_th_ch: '%', bk_th_qty: 'KL', bk_th_pnl: 'Lãi/lỗ', bk_rm_tt: 'Bỏ mã khỏi rổ',
+  bk_has_pos: 'Đang có vị thế {0} — bán hết trước khi bỏ khỏi rổ', bk_last: 'Rổ phải còn ít nhất 1 mã', bk_other_mkt: 'Một rổ chỉ gồm mã cùng thị trường (toàn Mỹ hoặc toàn HSX)',
+  bk_no_data: '{0} chưa có dữ liệu tại thời điểm này', bk_hint_free: 'Phiên cổ phiếu dùng chung 1 tài khoản cho cả rổ. Bấm 1 dòng để xem chart mã đó.', bk_hint_tr: 'Bấm 1 dòng để chuyển chart sang mã đó (giữ nguyên thời điểm).',
+  acct_h: 'Tài khoản', a_eq: 'Vốn hiện tại', a_cash: 'Tiền mặt', a_bp: 'Sức mua', a_margin: 'Ký quỹ đang dùng', a_free: 'Ký quỹ còn trống', a_dd: 'Sụt giảm lớn nhất',
+  tr_h: 'Thời gian', s1: '+1 nến', s1_tt: 'Phím → hoặc Space', s5_tt: 'Shift+→', spd_tt: 'Tốc độ tự chạy', keys_hint: '→ / Space: +1 nến · Shift+→: +5 · Kéo đường SL/TP trên chart để sửa',
+  ord_h: 'Đặt lệnh (thị trường, khớp giá đóng nến hiện tại)', qty_lab: 'Khối lượng', sl_lab: 'Cắt lỗ', tp_lab: 'Chốt lời', sl_ph: 'giá SL', tp_ph: 'giá TP (tùy chọn)', sl_x_tt: 'Bỏ SL', tp_x_tt: 'Bỏ TP',
+  auto_sl: 'SL tự động nếu bỏ trống =', b_long: 'LONG / Mua', b_short: 'SHORT / Bán', b_buy: 'MUA', b_sell: 'BÁN', m_long: 'LONG', m_short: 'SHORT',
+  close_q: 'Đóng một phần (KL ở ô trên)', close_all: 'Đóng hết lệnh mã này', m_close: 'Đóng lệnh', credit: 'Phát triển bởi RoboGPT', credit_n: 'lượt người dùng', quit_top: '✕ Kết thúc', quit_top_tt: 'Kết thúc phiên luyện tập và xem tổng kết', ind_zz: 'ZigZag (đảo chiều 4×ATR)', ind_ew: 'Sóng Elliott (máy tự đếm, tham khảo)', ew_note: 'ZigZag và sóng Elliott vẽ lại khi có nến mới: điểm cuối (nét đứt) chưa chốt.',
+  ord_hint_d: 'Bấm cùng chiều đang có = nhồi thêm. Bấm ngược chiều = đóng bớt (vượt quá số đang có thì đảo chiều).', ord_hint_s: 'Chỉ mua / bán (không bán khống). Mua phải đủ tiền mặt gồm cả phí.',
+  pct_tt: '{0}% sức mua', mult_lab: '{0} · 1 điểm giá = {1}',
+  pos_h: 'Vị thế', sess_h: 'Lệnh trong phiên', b_new: '🎲 Phiên mới', b_quit: 'Kết thúc & xem tổng kết',
+  jr_h: 'Nhật ký lệnh', csv: 'Xuất CSV', jr_clr: 'Xóa nhật ký', fee_h: 'Cài đặt phí', cf_comm: 'Hoa hồng', cf_comm_u: '{0}/{1}/chiều', cf_slip: 'Phí + trượt giá', cf_slip_u: '% giá trị/chiều',
+  cf_tax: 'Thuế bán', cf_tax_u: '% giá trị (chỉ chiều bán)', cf_fx: 'Tỷ giá', cf_fx_u: 'VNĐ/$ (chỉ để hiện quy đổi)', cf_reset: 'Về mặc định',
+  cf_note: 'Ở giá {0}: mua {1}, bán {2} mỗi {3} = {4}% · vòng {5}',
+  foot_help: 'Lăn chuột = zoom, kéo = xem lịch sử, kéo trục giá = giãn dọc, kéo trục thời gian = giãn ngang.', tz_note: 'Giờ hiển thị: giờ Việt Nam (UTC+7).',
+  note_xag: 'Bạc futures 100 oz. 4H cắt mốc UTC 0/4/8…, nến ngày = phiên CME. 5m/15m/30m có từ 2016 → {0}. Cập nhật lúc {2}.',
+  note_vn30: 'VN30F1M liên tục, nến 5m; 1H/Buổi/D/W gộp từ 5m. 1 điểm = {0} đ/HĐ. Cập nhật lúc {1}.',
+  note_yh: '{0}. Nến ngày từ {2}, 1H từ {3}, 5m từ {4} (5m và 1H tích lũy thêm mỗi lần cập nhật). Cập nhật lúc {5}.',
+  small_xag: ' 5m/15m/30m chỉ có 2016 → 11/2024.', small_yh: ' Nến 5m/15m/30m có từ {0}, nến 1H/4H từ {1}; trước đó chỉ có nến ngày/tuần.',
+  loading: 'Đang nạp dữ liệu…', load5: 'Đang nạp dữ liệu 5m (7 MB)…', load5_ok: 'Đã nạp 5m', load_fail: 'Không nạp được dữ liệu {0}', load_fail_all: 'Không nạp được dữ liệu — kiểm tra thư mục replay_data',
+  running: 'đang chạy', bars_u: 'nến', days_u: 'ngày', hours_u: 'giờ',
+  tool_cursor: 'Con trỏ / chọn / kéo', tool_trend: 'Đường xu hướng', tool_ray: 'Tia (kéo dài sang phải)', tool_chan: 'Kênh song song: kéo đường gốc (2 điểm), rồi bấm điểm thứ 3 để đặt độ rộng',
+  tool_hline: 'Đường ngang', tool_vline: 'Đường dọc', tool_rect: 'Hộp', tool_fib: 'Fibonacci thoái lui', tool_measure: 'Đo khoảng giá / thời gian', draw_color: 'Màu vẽ',
+  ind_on_price: 'Trên biểu đồ giá', ind_sub: 'Khung phụ bên dưới', ind_novol: 'Mã này không có dữ liệu khối lượng.', ind_lr: 'Kênh hồi quy 100 nến (±2σ)', ind_kc: 'Keltner (EMA20 ± 2,5×ATR14)', ind_psar: 'Parabolic SAR 0,02/0,2',
+  chan_3rd: 'Bấm điểm thứ 3 để đặt độ rộng kênh', no5_after: 'Không có dữ liệu 5m sau {0} — dùng 1H trở lên', no_tf_here: 'Khung {0} chưa có dữ liệu ở thời điểm này — dùng khung lớn hơn',
+  confirm_clr: 'Xóa hết hình vẽ?', busy_go: 'Đang trong phiên — không nhảy ngày được', sess_busy: 'Đang trong phiên — kết thúc phiên trước khi đổi',
+  no_range: 'Khoảng năm không có đủ dữ liệu cho khung này', pick_dt: 'Chọn ngày giờ trước', too_early: 'Quá gần đầu dữ liệu', too_late: 'Sau cuối dữ liệu',
+  confirm_close_all: 'Đang có vị thế mở — đóng hết theo giá hiện tại và kết thúc phiên?', no_more: 'Hết dữ liệu',
+  why_open: 'Mở', why_add: 'Nhồi', why_part: 'Đóng bớt', why_close: 'Đóng', why_rev: 'Đóng (đảo chiều)', why_sl: 'Cắt lỗ', why_slgap: 'Cắt lỗ (gap)', why_tp: 'Chốt lời', why_tpgap: 'Chốt lời (gap)',
+  why_end: 'Đóng (kết thúc phiên)', why_bust: 'Đóng (cháy tài khoản)',
+  toast_closed: 'Đóng {0} {1}: {2}{3}', qty_min: 'Khối lượng tối thiểu {0} {1} (bước {0})', no_price: 'Mã này chưa có giá tại thời điểm hiện tại', no_short: 'Chế độ cổ phiếu không bán khống — chưa có {0} để bán',
+  no_cash: 'Không đủ tiền mặt — mua tối đa được {0} {1}', no_margin: 'Không đủ ký quỹ: cần {0}, vốn hiện có {1}',
+  sl_below: 'SL phải dưới giá hiện tại {0}', sl_above: 'SL phải trên giá hiện tại {0}', tp_above: 'TP phải trên giá hiện tại', tp_below: 'TP phải dưới giá hiện tại',
+  banner: 'LUYỆN TẬP · {0} · {1}  ·  +{2} từ mốc', hidden_date: '(ẩn ngày)', start_at: 'mốc {0}',
+  k_price: 'Giá hiện tại', k_side: 'Chiều', k_avg: 'Giá vốn TB', k_unreal: 'Lãi/lỗ chưa chốt', k_real: 'Đã chốt', k_fees: 'Phí đã trả', k_ifclose: 'Nếu đóng ngay (ròng)', k_ifsl: 'Nếu chạm SL',
+  k_rnow: 'R hiện tại', k_adds: 'Nhồi', k_adds_v: '{0} lần', k_hold: 'Giữ', k_pos: 'Vị thế', k_flat: 'Đứng ngoài', k_val: 'Giá trị',
+  no_trades: 'Chưa có lệnh', th_side: 'Chiều', th_qty: 'KL', th_net: 'Ròng', th_sym: 'Mã', th_date: 'Ngày', th_tf: 'Khung', row_tt: 'Bấm để xem chi tiết lệnh',
+  j_n: 'Số lệnh', j_win: 'Thắng', j_tot: 'Tổng ròng', j_avg: 'TB / lệnh', j_avgwl: 'TB thắng / thua', j_pf: 'Profit factor', j_r: 'R trung bình', j_dd: 'Sụt giảm lớn nhất', j_fees: 'Tổng phí',
+  j_last15: '15 lệnh gần nhất / {0}', j_cur_note: 'Thống kê cho các lệnh tính bằng {0}', confirm_jclr: 'Xóa toàn bộ nhật ký ({0} lệnh)?',
+  csv_saved: 'Đã lưu {0}', csv_fail: 'Không lưu được file: {0}',
+  csv_head: 'ma,bat_dau,ket_thuc,khung,chieu,kl_toi_da,so_lan_nhoi,gia_vao_TB,gia_ra_TB,lai_gop,phi,rong,tien,R,MAE,MFE,gio_giu,ly_do_thoat',
+  sm_title: 'Chi tiết lệnh {0} {1}', sm_in: 'Vào', sm_out: 'Ra', sm_avg_adds: ' (TB, {0} lần nhồi)', sm_maxq: 'Khối lượng tối đa', sm_hold: 'Thời gian giữ', sm_hold_v: '{0} giờ ≈ {1} nến {2}',
+  sm_gross: 'Lãi/lỗ gộp', sm_fee: 'Phí (hoa hồng + trượt giá + thuế)', sm_net: 'Ròng', sm_pct: '% trên giá trị vị thế', sm_risk: 'Rủi ro ban đầu (tới SL đầu)', sm_norisk: 'không đặt SL',
+  sm_r: 'Kết quả theo R', sm_mae: 'Lỗ tạm lớn nhất (MAE)', sm_mfe: 'Lãi tạm lớn nhất (MFE)', sm_giveback: 'Đã "trả lại" từ đỉnh lãi', sm_fills: 'Các lần khớp',
+  sm_time: 'Thời gian', sm_order: 'Lệnh', sm_px: 'Giá', sm_why: 'Lý do', sm_feecol: 'Phí', buy: 'Mua', sell: 'Bán', close: 'Đóng',
+  restored: 'Đã khôi phục phiên đang dở', restore_fail: 'Không khôi phục được phiên đang dở (thiếu dữ liệu)',
+  se_user: 'Kết thúc phiên', se_eod: 'Hết dữ liệu — kết thúc phiên', se_bust: 'Cháy tài khoản — kết thúc phiên', se_eq: 'Vốn cuối', se_trades: 'Số lệnh', se_win: 'Tỷ lệ thắng', se_dd: 'Sụt giảm lớn nhất',
+  draw_btn: 'Vẽ', draw_tt: 'Công cụ vẽ, màu, nam châm, xóa hình', draw_mag: 'Nam châm (bám O/H/L/C)',
+  tn_cursor: 'Con trỏ', tn_trend: 'Xu hướng', tn_ray: 'Tia', tn_chan: 'Kênh', tn_hline: 'Ngang', tn_vline: 'Dọc', tn_rect: 'Hộp', tn_fib: 'Fibonacci', tn_measure: 'Đo',
+  fee_on: 'Lãi lỗ ĐÃ trừ thuế phí + trượt giá', fee_tot: 'Tổng 1 vòng mua + bán: {0}% ≈ {1} / {2}', fee_p_comm: 'hoa hồng {0} × 2', fee_p_slip: 'phí + trượt giá {0}% × 2', fee_p_tax: 'thuế bán {0}%', help_tt: 'Hướng dẫn nhanh', learn_btn: '📚 Kiến thức', learn_tt: 'Kiến thức trading: phân tích kỹ thuật, phân tích cơ bản, tâm lý giao dịch', se_learn_h: 'Lệnh sau sẽ khác, nếu bạn hiểu vì sao lệnh này thắng hay thua.', se_learn_p: 'Hãy vào đọc thêm về kỹ thuật ở đây: nến, xu hướng, quản trị vốn và kỷ luật giao dịch, mỗi bài kèm ví dụ và một câu chuyện.', se_learn_go: 'Đọc Kiến thức trading →', fb_btn: '💬 Góp ý', fb_tt: 'Gửi góp ý, báo lỗi, đề xuất tính năng', play_tt: 'Tự chạy / dừng',
+  b_fab: '▶ Bắt đầu luyện tập', start_sub: 'Vốn {0} · mốc ngẫu nhiên trong quá khứ', start_sub_bk: 'rổ {0} mã', b_last_sum: '📊 Tổng kết phiên vừa rồi',
+  opt_h: 'Tùy chọn', go_lab: 'Xem ngày', a_cap0: 'Vốn đầu',
+  hist_h: 'Lịch sử phiên', hist_none: 'Chưa có phiên nào. Bấm “Bắt đầu luyện tập” để chơi phiên đầu tiên.', hist_n: 'Số phiên', hist_win: 'Phiên có lãi', hist_avg: 'Lãi/lỗ TB mỗi phiên',
+  hist_bw: 'Tốt nhất / tệ nhất', hist_vs: 'TB so với mua-và-giữ', hist_clr: 'Xóa lịch sử', confirm_hclr: 'Xóa lịch sử {0} phiên?', hist_last: '{0} phiên gần nhất / {1}',
+  th_when: 'Ngày chơi', th_ret: 'Lãi/lỗ', th_n: 'Lệnh', th_out: 'Thoát', th_in: 'Vào',
+  se_cap: 'Vốn đầu {0} → vốn cuối {1}', se_bars: 'Thời gian luyện', se_bars_v: '{0} nến', se_best: 'Lệnh tốt nhất', se_worst: 'Lệnh tệ nhất', se_inpos: 'Thời gian có vị thế',
+  se_bh: 'Mua-và-giữ', se_vs: 'So với mua-và-giữ', pp: 'điểm %', se_you: 'Vốn của bạn', se_bh_d: 'Mua-và-giữ {0} (cùng vốn, không đòn bẩy)', se_bh_s: 'Mua-và-giữ (chia đều vốn cho {0} mã của rổ)',
+  se_by_sym: 'Theo từng mã', se_contrib: 'Đóng góp (% vốn)', se_trades_h: 'Các lệnh (bấm để xem chi tiết)', se_copy: 'Sao chép kết quả', copied: 'Đã sao chép', copy_fail: 'Không sao chép được',
+  se_back: '← Về bảng tổng kết', se_no_tr: 'Phiên này không có lệnh nào.',
+  share_res: 'Kết quả', share_tr: 'Lệnh {0} · Thắng {1} · PF {2} · Sụt giảm lớn nhất −{3}%',
+  onb_step: 'Bước {0}/{1}', onb_next: 'Tiếp →', onb_back: '← Lùi', onb_skip: 'Bỏ qua', onb_cap: 'Vốn ảo {0}',
+  onb1_h: 'Chọn chế độ và mã', onb1_p: 'Phái sinh: luyện 1 mã, đánh được cả LONG lẫn SHORT, có ký quỹ. Cổ phiếu: chơi cả một rổ nhiều mã bằng chung một tài khoản, chỉ mua / bán.',
+  onb2_h: 'Bấm “Bắt đầu luyện tập”', onb2_p: 'Biểu đồ nhảy về một mốc ngẫu nhiên trong quá khứ, phần phía sau bị che lại. Bạn có sẵn vốn ảo để giao dịch.',
+  onb3_h: 'Cho thời gian trôi và vào lệnh', onb3_p: 'Bấm “+1 nến” (hoặc phím → / Space) để thời gian trôi. Đặt MUA / BÁN, rồi kéo đường cắt lỗ và chốt lời ngay trên biểu đồ.',
+  onb4_h: 'Kết thúc để xem bảng tổng kết', onb4_p: 'Bấm “Kết thúc” bất cứ lúc nào: lãi lỗ, tỷ lệ thắng, sụt giảm lớn nhất và so sánh với việc chỉ mua-và-giữ.',
+  fb_h: 'Góp ý cho StockGym', fb_desc: 'Bạn thấy lỗi, thiếu mã, hay muốn thêm tính năng? Cho chúng tôi biết.', fb_rating: 'Đánh giá', fb_type: 'Loại',
+  fb_t_bug: 'Lỗi', fb_t_feature: 'Đề xuất tính năng', fb_t_data: 'Dữ liệu', fb_t_other: 'Khác', fb_ph: 'Nội dung góp ý (bắt buộc)…',
+  fb_contact: 'Liên hệ', fb_contact_ph: '(tùy chọn) email / Telegram…', fb_ctx: 'Gửi kèm', fb_send: 'Gửi góp ý', fb_copy: 'Sao chép nội dung', fb_need: 'Hãy nhập nội dung góp ý',
+  fb_public: 'Bấm “Gửi góp ý” sẽ mở trang GitHub (công khai) ở tab mới với nội dung đã điền sẵn — bạn tự bấm gửi ở đó. Đừng ghi thông tin riêng tư. Không có gì được gửi đi khi bạn chưa bấm.',
+  fb_private: 'Không có gì được gửi đi khi bạn chưa bấm “Gửi góp ý”.', fb_sending: 'Đang gửi…', fb_sent: 'Đã gửi, cảm ơn bạn!', fb_fail: 'Không gửi được — hãy sao chép nội dung và thử lại sau.',
+  fb_opened: 'Đã mở trang gửi ở tab mới và sao chép nội dung. Bấm “Submit new issue” ở đó để hoàn tất.', fb_open_link: 'Mở lại trang gửi', fb_star_tt: '{0}/5 sao',
+  se_period: 'Giai đoạn', se_review: 'Xem lại chart'},
+en: {
+  dow: 'Sun,Mon,Tue,Wed,Thu,Fri,Sat', tf_sess: 'Session',
+  g_cmd: 'Commodities', g_idx: 'US index futures', g_fx: 'Forex', g_cry: 'Crypto', g_vn: 'Vietnam derivatives', g_us: 'US stocks', g_hsx: 'Vietnam stocks (HSX)',
+  u_ct: 'ct', u_lot: 'lot', u_btc: 'BTC', u_sh: 'sh',
+  brand_tt: 'StockGym — practice trading on historical candles', mode_deriv: 'Derivatives', mode_stock: 'Stocks', mode_tt: 'Derivatives: one symbol, long/short, margin · Stocks: a basket of symbols, buy/sell only',
+  sym_tt: 'Choose symbol', mag_tt: 'Magnet: drawing points snap to O/H/L/C', del_tt: 'Delete selected drawing (Delete)', clr_tt: 'Delete all drawings',
+  ind_tt: 'Toggle indicators', ind_btn: 'Indicators', go_tt: 'Jump to date (when no session is running)', go: 'Go', end_tt: 'Go to latest candle', auto_tt: 'Auto-scale price axis (or double-click the price axis)',
+  lang_tt: 'Language',
+  start_h: 'Training', start_desc: 'The chart jumps to a point in the past and everything after it is hidden. Step candle by candle and decide when to enter, stop out or add.',
+  cap_lab: 'Capital', years_lab: 'Year range', blind_lab: 'Hide dates (show time only)', or_from: 'Or from', b_start: 'Start',
+  tf_note: 'The timeframe selected in the top bar is the step size. You can change it mid-session; the future stays hidden.',
+  bk_h: 'Your basket', bk_add: '+ Add', bk_th_sym: 'Symbol', bk_th_px: 'Price', bk_th_ch: '%', bk_th_qty: 'Qty', bk_th_pnl: 'P&L', bk_rm_tt: 'Remove from basket',
+  bk_has_pos: 'You hold {0} — sell it before removing it', bk_last: 'The basket needs at least 1 symbol', bk_other_mkt: 'A basket can only hold symbols of one market (all US or all HSX)',
+  bk_no_data: '{0} has no data at this point in time', bk_hint_free: 'A stock session uses one account for the whole basket. Click a row to view that chart.', bk_hint_tr: 'Click a row to switch the chart to that symbol (same point in time).',
+  acct_h: 'Account', a_eq: 'Equity', a_cash: 'Cash', a_bp: 'Buying power', a_margin: 'Margin used', a_free: 'Free margin', a_dd: 'Max drawdown',
+  tr_h: 'Time', s1: '+1 candle', s1_tt: '→ or Space', s5_tt: 'Shift+→', spd_tt: 'Autoplay speed', keys_hint: '→ / Space: +1 candle · Shift+→: +5 · Drag the SL/TP lines on the chart to edit',
+  ord_h: 'Order (market, filled at the current candle close)', qty_lab: 'Quantity', sl_lab: 'Stop loss', tp_lab: 'Take profit', sl_ph: 'SL price', tp_ph: 'TP price (optional)', sl_x_tt: 'Remove SL', tp_x_tt: 'Remove TP',
+  auto_sl: 'Auto SL if empty =', b_long: 'LONG / Buy', b_short: 'SHORT / Sell', b_buy: 'BUY', b_sell: 'SELL', m_long: 'LONG', m_short: 'SHORT',
+  close_q: 'Close part (quantity above)', close_all: 'Close whole position', m_close: 'Close position', credit: 'Developed by RoboGPT', credit_n: 'users', quit_top: '✕ End session', quit_top_tt: 'End the training session and see the summary', ind_zz: 'ZigZag (4×ATR reversal)', ind_ew: 'Elliott waves (auto count, for reference)', ew_note: 'ZigZag and Elliott waves repaint as new candles arrive: the last (dashed) point is not confirmed.',
+  ord_hint_d: 'Same side as your position = add. Opposite side = reduce (more than you hold reverses the position).', ord_hint_s: 'Buy / sell only (no short selling). Buying needs enough cash including fees.',
+  pct_tt: '{0}% of buying power', mult_lab: '{0} · 1 price point = {1}',
+  pos_h: 'Position', sess_h: 'Trades this session', b_new: '🎲 New session', b_quit: 'End & see summary',
+  jr_h: 'Trade journal', csv: 'Export CSV', jr_clr: 'Clear journal', fee_h: 'Fee settings', cf_comm: 'Commission', cf_comm_u: '{0}/{1}/side', cf_slip: 'Fee + slippage', cf_slip_u: '% of value/side',
+  cf_tax: 'Sell tax', cf_tax_u: '% of value (sells only)', cf_fx: 'FX rate', cf_fx_u: 'VND/$ (display only)', cf_reset: 'Reset to default',
+  cf_note: 'At price {0}: buy {1}, sell {2} per {3} = {4}% · round trip {5}',
+  foot_help: 'Wheel = zoom, drag = scroll history, drag price axis = vertical scale, drag time axis = horizontal scale.', tz_note: 'Times shown in New York time (ET).',
+  note_xag: 'Silver futures, 100 oz. 4H bars cut at UTC 0/4/8…, daily bars = CME session. 5m/15m/30m cover 2016 → {0}. Updated {2}.',
+  note_vn30: 'VN30F1M continuous, 5m candles; 1H/Session/D/W aggregated from 5m. 1 point = {0} VND per contract. Updated {1}.',
+  note_yh: '{0}. Daily candles from {2}, 1H from {3}, 5m from {4} (5m and 1H history grows with each update). Updated {5}.',
+  small_xag: ' 5m/15m/30m only cover 2016 → 11/2024.', small_yh: ' 5m/15m/30m candles start {0}, 1H/4H start {1}; before that only daily/weekly.',
+  loading: 'Loading data…', load5: 'Loading 5m data (7 MB)…', load5_ok: '5m loaded', load_fail: 'Could not load data for {0}', load_fail_all: 'Could not load data — check the replay_data folder',
+  running: 'forming', bars_u: 'bars', days_u: 'days', hours_u: 'h',
+  tool_cursor: 'Cursor / select / drag', tool_trend: 'Trend line', tool_ray: 'Ray (extends right)', tool_chan: 'Parallel channel: drag the base line (2 points), then click a 3rd point to set the width',
+  tool_hline: 'Horizontal line', tool_vline: 'Vertical line', tool_rect: 'Box', tool_fib: 'Fibonacci retracement', tool_measure: 'Measure price / time', draw_color: 'Drawing colour',
+  ind_on_price: 'On the price chart', ind_sub: 'Sub-panels below', ind_novol: 'This symbol has no volume data.', ind_lr: 'Regression channel, 100 bars (±2σ)', ind_kc: 'Keltner (EMA20 ± 2.5×ATR14)', ind_psar: 'Parabolic SAR 0.02/0.2',
+  chan_3rd: 'Click a 3rd point to set the channel width', no5_after: 'No 5m data after {0} — use 1H or higher', no_tf_here: 'No {0} data at this point in time — use a higher timeframe',
+  confirm_clr: 'Delete all drawings?', busy_go: 'Session running — cannot jump to a date', sess_busy: 'Session running — end it before switching',
+  no_range: 'Not enough data in that year range for this timeframe', pick_dt: 'Pick a date and time first', too_early: 'Too close to the start of the data', too_late: 'After the end of the data',
+  confirm_close_all: 'You have open positions — close them at the current price and end the session?', no_more: 'No more data',
+  why_open: 'Open', why_add: 'Add', why_part: 'Reduce', why_close: 'Close', why_rev: 'Close (reverse)', why_sl: 'Stop loss', why_slgap: 'Stop loss (gap)', why_tp: 'Take profit', why_tpgap: 'Take profit (gap)',
+  why_end: 'Close (session end)', why_bust: 'Close (account blown)',
+  toast_closed: 'Closed {0} {1}: {2}{3}', qty_min: 'Minimum quantity {0} {1} (step {0})', no_price: 'This symbol has no price at the current time', no_short: 'No short selling in stock mode — you hold no {0}',
+  no_cash: 'Not enough cash — you can buy at most {0} {1}', no_margin: 'Not enough margin: need {0}, equity is {1}',
+  sl_below: 'SL must be below the current price {0}', sl_above: 'SL must be above the current price {0}', tp_above: 'TP must be above the current price', tp_below: 'TP must be below the current price',
+  banner: 'TRAINING · {0} · {1}  ·  +{2} since start', hidden_date: '(dates hidden)', start_at: 'from {0}',
+  k_price: 'Current price', k_side: 'Side', k_avg: 'Avg cost', k_unreal: 'Unrealized P&L', k_real: 'Realized', k_fees: 'Fees paid', k_ifclose: 'If closed now (net)', k_ifsl: 'If SL is hit',
+  k_rnow: 'Current R', k_adds: 'Adds', k_adds_v: '{0}×', k_hold: 'Held', k_pos: 'Position', k_flat: 'Flat', k_val: 'Value',
+  no_trades: 'No trades yet', th_side: 'Side', th_qty: 'Qty', th_net: 'Net', th_sym: 'Symbol', th_date: 'Date', th_tf: 'TF', row_tt: 'Click for trade details',
+  j_n: 'Trades', j_win: 'Win rate', j_tot: 'Total net', j_avg: 'Avg / trade', j_avgwl: 'Avg win / loss', j_pf: 'Profit factor', j_r: 'Average R', j_dd: 'Max drawdown', j_fees: 'Total fees',
+  j_last15: 'Last 15 of {0} trades', j_cur_note: 'Stats for trades in {0}', confirm_jclr: 'Delete the whole journal ({0} trades)?',
+  csv_saved: 'Saved to {0}', csv_fail: 'Could not save the file: {0}',
+  csv_head: 'symbol,start,end,timeframe,side,max_qty,adds,avg_entry,avg_exit,gross,fees,net,currency,R,MAE,MFE,hours_held,exit_reason',
+  sm_title: '{0} {1} trade details', sm_in: 'Entry', sm_out: 'Exit', sm_avg_adds: ' (avg, {0} adds)', sm_maxq: 'Max quantity', sm_hold: 'Holding time', sm_hold_v: '{0} h ≈ {1} bars {2}',
+  sm_gross: 'Gross P&L', sm_fee: 'Fees (commission + slippage + tax)', sm_net: 'Net', sm_pct: '% of position value', sm_risk: 'Initial risk (to first SL)', sm_norisk: 'no SL set',
+  sm_r: 'Result in R', sm_mae: 'Max adverse excursion (MAE)', sm_mfe: 'Max favourable excursion (MFE)', sm_giveback: 'Given back from peak profit', sm_fills: 'Fills',
+  sm_time: 'Time', sm_order: 'Order', sm_px: 'Price', sm_why: 'Reason', sm_feecol: 'Fee', buy: 'Buy', sell: 'Sell', close: 'Close',
+  restored: 'Unfinished session restored', restore_fail: 'Could not restore the unfinished session (data missing)',
+  se_user: 'Session ended', se_eod: 'End of data — session ended', se_bust: 'Account blown — session ended', se_eq: 'Final equity', se_trades: 'Trades', se_win: 'Win rate', se_dd: 'Max drawdown',
+  draw_btn: 'Draw', draw_tt: 'Drawing tools, colours, magnet, delete', draw_mag: 'Magnet (snap to O/H/L/C)',
+  tn_cursor: 'Cursor', tn_trend: 'Trend line', tn_ray: 'Ray', tn_chan: 'Channel', tn_hline: 'Horizontal', tn_vline: 'Vertical', tn_rect: 'Box', tn_fib: 'Fibonacci', tn_measure: 'Measure',
+  fee_on: 'P&L is AFTER fees, tax and slippage', fee_tot: 'Round trip (buy + sell): {0}% ≈ {1} per {2}', fee_p_comm: 'commission {0} × 2', fee_p_slip: 'fee + slippage {0}% × 2', fee_p_tax: 'sell tax {0}%', help_tt: 'Quick guide', learn_btn: '📚 Learn', learn_tt: 'Trading knowledge: technical analysis, fundamentals, trading psychology', se_learn_h: 'Your next trade changes once you know why this one won or lost.', se_learn_p: 'Read more about the craft here: candles, trend, risk management and trading discipline. Every lesson comes with an example and a story.', se_learn_go: 'Read Trading knowledge →', fb_btn: '💬 Feedback', fb_tt: 'Send feedback, report a bug, request a feature', play_tt: 'Autoplay / pause',
+  b_fab: '▶ Start training', start_sub: 'Capital {0} · random date in the past', start_sub_bk: 'basket of {0}', b_last_sum: '📊 Last session summary',
+  opt_h: 'Options', go_lab: 'View date', a_cap0: 'Starting capital',
+  hist_h: 'Session history', hist_none: 'No sessions yet. Press “Start training” to play your first one.', hist_n: 'Sessions', hist_win: 'Profitable sessions', hist_avg: 'Avg return per session',
+  hist_bw: 'Best / worst', hist_vs: 'Avg vs buy & hold', hist_clr: 'Clear history', confirm_hclr: 'Delete the history of {0} sessions?', hist_last: 'Last {0} of {1} sessions',
+  th_when: 'Played', th_ret: 'Return', th_n: 'Trades', th_out: 'Exit', th_in: 'Entry',
+  se_cap: 'Start {0} → final {1}', se_bars: 'Training length', se_bars_v: '{0} bars', se_best: 'Best trade', se_worst: 'Worst trade', se_inpos: 'Time in the market',
+  se_bh: 'Buy & hold', se_vs: 'vs buy & hold', pp: 'pp', se_you: 'Your equity', se_bh_d: 'Buy & hold {0} (same capital, no leverage)', se_bh_s: 'Buy & hold (capital split equally across {0} basket symbols)',
+  se_by_sym: 'By symbol', se_contrib: 'Contribution (% of capital)', se_trades_h: 'Trades (click a row for details)', se_copy: 'Copy result', copied: 'Copied', copy_fail: 'Could not copy',
+  se_back: '← Back to summary', se_no_tr: 'No trades in this session.',
+  share_res: 'Result', share_tr: 'Trades {0} · Win rate {1} · PF {2} · Max drawdown −{3}%',
+  onb_step: 'Step {0} of {1}', onb_next: 'Next →', onb_back: '← Back', onb_skip: 'Skip', onb_cap: 'Paper capital {0}',
+  onb1_h: 'Pick a mode and a symbol', onb1_p: 'Derivatives: train on one symbol, go LONG or SHORT, with margin. Stocks: trade a whole basket of symbols from one account, buy / sell only.',
+  onb2_h: 'Press “Start training”', onb2_p: 'The chart jumps to a random date in the past and everything after it is hidden. You get paper capital to trade with.',
+  onb3_h: 'Let time pass and trade', onb3_p: 'Press “+1 candle” (or → / Space) to move time forward. Place BUY / SELL orders, then drag the stop-loss and take-profit lines right on the chart.',
+  onb4_h: 'End the session to see your summary', onb4_p: 'Press “End” whenever you like: P&L, win rate, max drawdown and how you did against simply buying and holding.',
+  fb_h: 'Feedback for StockGym', fb_desc: 'Found a bug, a missing symbol, or want a new feature? Tell us.', fb_rating: 'Rating', fb_type: 'Type',
+  fb_t_bug: 'Bug', fb_t_feature: 'Feature request', fb_t_data: 'Data', fb_t_other: 'Other', fb_ph: 'Your feedback (required)…',
+  fb_contact: 'Contact', fb_contact_ph: '(optional) email / Telegram…', fb_ctx: 'Sent along', fb_send: 'Send feedback', fb_copy: 'Copy text', fb_need: 'Please write your feedback first',
+  fb_public: '“Send feedback” opens a (public) GitHub page in a new tab with your text filled in — you submit it there yourself. Do not include private information. Nothing is sent until you click.',
+  fb_private: 'Nothing is sent until you click “Send feedback”.', fb_sending: 'Sending…', fb_sent: 'Sent — thank you!', fb_fail: 'Could not send — please copy the text and try again later.',
+  fb_opened: 'The submission page opened in a new tab and the text was copied. Click “Submit new issue” there to finish.', fb_open_link: 'Open the submission page again', fb_star_tt: '{0}/5 stars',
+  se_period: 'Period', se_review: 'Review chart'}};
+let LANG = (() => {
+  let l = null, q = false;
+  try { l = new URLSearchParams(location.search).get('lang'); q = l === 'vi' || l === 'en'; } catch(e){}
+  if (!q){ try { l = JSON.parse(localStorage.getItem('sg_lang')); } catch(e){ l = null; } }
+  if (l !== 'vi' && l !== 'en') l = /^vi/i.test((typeof navigator !== 'undefined' && navigator.language) || '') ? 'vi' : 'en';
+  if (q){ try { localStorage.setItem('sg_lang', JSON.stringify(l)); } catch(e){} }
+  return l;
+})();
+function t(key, ...a){
+  let s = I18N[LANG][key]; if (s == null) s = I18N.vi[key]; if (s == null) return key;
+  return a.length ? s.replace(/\{(\d)\}/g, (m, i) => a[+i] != null ? a[+i] : '') : s;
+}
+function applyI18n(root){
+  root = root || document;
+  root.querySelectorAll('[data-i18n]').forEach(e => { e.textContent = t(e.dataset.i18n); });
+  root.querySelectorAll('[data-i18n-title]').forEach(e => { e.title = t(e.dataset.i18nTitle); });
+  root.querySelectorAll('[data-i18n-ph]').forEach(e => { e.placeholder = t(e.dataset.i18nPh); });
+  if (root === document) updCount();
+}
+document.documentElement.lang = LANG;
+</script>
+</head>
+<body>
+<div id="app">
+ <div id="top">
+  <div class="brand" data-i18n-title="brand_tt">Stock<b>Gym</b></div>
+  <div class="grp seg" id="modeSw" data-i18n-title="mode_tt"><button class="b" data-m="deriv" data-i18n="mode_deriv"></button><button class="b" data-m="stock" data-i18n="mode_stock"></button></div>
+  <div class="grp"><select id="symSel" data-i18n-title="sym_tt"></select></div>
+  <div class="grp seg" id="tfs"></div>
+  <div class="grp"><button class="b" id="bDraw" data-i18n-title="draw_tt"></button><button class="b" id="bInd" data-i18n-title="ind_tt"></button></div>
+  <div class="sp"></div>
+  <div class="grp"><button class="b sq" id="bHelp" data-i18n-title="help_tt"><b>?</b></button><button class="b" id="bLearn" data-i18n-title="learn_tt" data-i18n="learn_btn"></button><button class="b" id="bFb" data-i18n-title="fb_tt" data-i18n="fb_btn"></button></div>
+  <div class="grp seg" id="langSw" data-i18n-title="lang_tt"><button class="b" data-l="vi">VI</button><button class="b" data-l="en">EN</button></div>
+  <button class="b warn" id="bQuitTop" data-i18n="quit_top" data-i18n-title="quit_top_tt"></button>
+ </div>
+ <div id="main">
+  <div id="cw"><canvas id="cv"></canvas><div id="legend"></div><div id="credit"><span data-i18n="credit"></span><span id="creditN"></span></div><div id="feeNote"></div><div id="banner"></div>
+   <div id="cnav"><button class="b mini" id="bEnd" data-i18n-title="end_tt">⇥</button><button class="b mini" id="bAuto" data-i18n-title="auto_tt">Auto</button></div>
+   <div id="fab"><button class="cta" id="bFab" data-i18n="b_fab"></button><div id="fabSub"></div></div>
+  </div>
+  <aside id="side">
+   <div id="freeP">
+    <div class="box">
+     <h3 data-i18n="start_h"></h3>
+     <div class="muted" data-i18n="start_desc"></div>
+     <button class="cta wide" id="bRand" data-i18n="b_fab"></button>
+     <div class="muted center" id="startSub"></div>
+     <button class="b" id="bLastSum" style="display:none;width:100%;margin-top:8px" data-i18n="b_last_sum"></button>
+    </div>
+    <details class="box" id="optBox">
+     <summary data-i18n="opt_h"></summary>
+     <div class="row"><label data-i18n="cap_lab"></label><input type="number" id="capIn" min="0" style="width:150px"><span class="muted" id="capCur"></span></div>
+     <div class="row"><label data-i18n="years_lab"></label><select id="ry0"></select> → <select id="ry1"></select></div>
+     <label class="chk"><input type="checkbox" id="blind"> <span data-i18n="blind_lab"></span></label>
+     <div class="row"><label data-i18n="or_from"></label><input type="datetime-local" id="tDate" class="grow"><button class="b" id="bAt" data-i18n="b_start"></button></div>
+     <div class="row"><label data-i18n="go_lab"></label><input type="date" id="goDate" class="grow" data-i18n-title="go_tt"><button class="b" id="bGo" data-i18n="go"></button></div>
+     <div class="muted"><span data-i18n="tf_note"></span><span id="smallNote"></span></div>
+    </details>
+   </div>
+   <div id="trainP" style="display:none">
+    <div class="box">
+     <h3><span data-i18n="acct_h"></span> <span id="tInfo" class="muted"></span></h3>
+     <div class="acct" id="acctKV"></div>
+    </div>
+    <div class="box">
+     <h3 data-i18n="tr_h"></h3>
+     <div class="row">
+      <button class="b pri step1" id="s1" data-i18n-title="s1_tt" data-i18n="s1"></button>
+      <button class="b grow" id="s5" data-i18n-title="s5_tt">+5</button>
+      <button class="b grow" id="s20">+20</button>
+      <button class="b grow" id="sPlay" data-i18n-title="play_tt">▶</button>
+      <select id="spd" data-i18n-title="spd_tt"><option value="1000">1/s</option><option value="500" selected>2/s</option><option value="250">4/s</option><option value="100">10/s</option></select>
+     </div>
+     <div class="muted" data-i18n="keys_hint"></div>
+    </div>
+    <div class="box">
+     <h3 data-i18n="ord_h"></h3>
+     <div class="row"><label data-i18n="qty_lab"></label><input type="number" id="qty" value="1" min="1" step="1"><span class="muted" id="multLab"></span></div>
+     <div class="row" id="pctRow" style="display:none"><label></label><button class="b mini" data-pct="25">25%</button><button class="b mini" data-pct="50">50%</button><button class="b mini" data-pct="100">100%</button><span class="muted" id="bpLab"></span></div>
+     <div class="row"><label data-i18n="sl_lab"></label><input type="number" id="slIn" step="0.001" class="grow" data-i18n-ph="sl_ph"><button class="b sq" id="slX" data-i18n-title="sl_x_tt">×</button></div>
+     <div class="row"><label data-i18n="tp_lab"></label><input type="number" id="tpIn" step="0.001" class="grow" data-i18n-ph="tp_ph"><button class="b sq" id="tpX" data-i18n-title="tp_x_tt">×</button></div>
+     <div class="row"><label class="chk"><input type="checkbox" id="autoSL" checked> <span data-i18n="auto_sl"></span></label><input type="number" id="slK" value="2" step="0.5" style="width:64px"><span class="muted">× ATR14</span></div>
+     <div class="row"><button class="big long" id="bLong"></button><button class="big short" id="bShort"></button></div>
+     <div class="row"><button class="b grow" id="bCloseQ" data-i18n="close_q"></button><button class="b grow" id="bCloseA" data-i18n="close_all"></button></div>
+     <div class="muted" id="ordHint"></div>
+    </div>
+    <div class="box">
+     <h3><span data-i18n="pos_h"></span> <span id="posSym" class="muted"></span></h3>
+     <div class="kv" id="posKV"></div>
+    </div>
+   </div>
+   <div class="box" id="bkBox" style="display:none">
+    <h3 data-i18n="bk_h"></h3>
+    <div id="bkT" class="tw"></div>
+    <div class="row"><select id="bkAdd" class="grow"></select><button class="b" id="bkAddB" data-i18n="bk_add"></button></div>
+    <div class="muted" id="bkHint"></div>
+   </div>
+   <div id="trainP2" style="display:none">
+    <div class="box">
+     <h3 data-i18n="sess_h"></h3>
+     <div id="sessT" class="tw"></div>
+    </div>
+    <div class="row" style="margin-bottom:10px">
+     <button class="b warn" id="bQuit" style="flex:1 1 100%;min-height:46px" data-i18n="b_quit"></button>
+     <button class="b grow" id="bNew" data-i18n="b_new"></button>
+    </div>
+   </div>
+   <div class="box" id="histBox">
+    <h3 data-i18n="hist_h"></h3>
+    <div class="kv" id="histStat"></div>
+    <div id="histT" class="tw" style="margin-top:6px"></div>
+    <div class="row" id="histBtns"><button class="b mini" id="bHClr" data-i18n="hist_clr"></button></div>
+   </div>
+   <details class="box" id="jrBox">
+    <summary data-i18n="jr_h"></summary>
+    <div class="kv" id="jStat"></div>
+    <div id="jTab" class="tw" style="margin-top:6px"></div>
+    <div class="row"><button class="b mini" id="bCsv" data-i18n="csv"></button><button class="b mini" id="bJClr" data-i18n="jr_clr"></button></div>
+   </details>
+   <details class="box">
+    <summary data-i18n="fee_h"></summary>
+    <div class="row"><label data-i18n="cf_comm"></label><input type="number" id="cfComm" step="any"><span class="muted" id="cfCommU"></span></div>
+    <div class="row"><label data-i18n="cf_slip"></label><input type="number" id="cfSlip" step="0.001"><span class="muted" data-i18n="cf_slip_u"></span></div>
+    <div class="row" id="taxRow"><label data-i18n="cf_tax"></label><input type="number" id="cfTax" step="0.01"><span class="muted" data-i18n="cf_tax_u"></span></div>
+    <div class="row" id="fxRow"><label data-i18n="cf_fx"></label><input type="number" id="cfFx" step="100"><span class="muted" data-i18n="cf_fx_u"></span></div>
+    <div class="muted" id="cfNote"></div>
+    <div class="row"><button class="b mini" id="cfReset" data-i18n="cf_reset"></button></div>
+   </details>
+   <div class="muted foot"><span data-i18n="tz_note"></span> <span id="dataNote"></span> <span data-i18n="foot_help"></span></div>
+  </aside>
+ </div>
+</div>
+<div id="toast"></div>
+<div id="indMenu" class="menu"></div>
+<div id="drawMenu" class="menu">
+ <div id="tools"></div>
+ <h4 data-i18n="draw_color"></h4>
+ <div id="colors"></div>
+ <div class="mrow">
+  <button class="b" id="bMag" data-i18n-title="mag_tt"><span>🧲</span><span data-i18n="draw_mag"></span></button>
+  <button class="b" id="bDel" data-i18n="del_tt"></button>
+  <button class="b" id="bClr" data-i18n="clr_tt"></button>
+ </div>
+</div>
+<div id="modal"><div id="mbox"></div></div>
+<div id="mbar"><button class="b" data-k="s1">+1</button><button class="b" data-k="s5">+5</button><button class="b" data-k="sPlay" id="mPlay">▶</button>
+ <button class="big long" data-k="bLong" id="mLong"></button><button class="big short" data-k="bShort" id="mShort"></button><span id="mpos">–</span><button class="b" data-k="bCloseA" data-i18n="m_close"></button></div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const LS = {get(k, d){try{const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v);}catch(e){return d;}},
+            set(k, v){try{localStorage.setItem(k, JSON.stringify(v));}catch(e){}},
+            del(k){try{localStorage.removeItem(k);}catch(e){}}};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const rq = x => +(+x).toFixed(6);                // khối lượng: khử sai số số thực (lô 0,1 / 0,01)
+
+/* ---------- phí theo từng mã: comm (tiền của mã / đơn vị KL / chiều) + slip (% giá trị / chiều) + tax (% giá trị, chỉ chiều bán) ---------- */
+let FX_VND = +LS.get('sg_fx', FX_VND0) || FX_VND0;
+const CFGS = {};
+function cfgOf(key){
+  if (CFGS[key]) return CFGS[key];
+  const c = Object.assign({}, SYMS[key].fee), u = LS.get('sg_cfg_' + key, null);
+  if (u && typeof u === 'object') for (const k of ['comm', 'slip', 'tax']) if (typeof u[k] === 'number' && isFinite(u[k]) && u[k] >= 0) c[k] = u[k];
+  return CFGS[key] = c;
+}
+function feeSide(key, side, px, q){ const c = cfgOf(key); return q * c.comm + (c.slip + (side < 0 ? c.tax : 0)) / 100 * px * SYMS[key].mult * q; }
+
+/* ---------- dữ liệu ---------- */
+function decode(k, raw){
+  const n = raw.n, d = raw.d, s = raw.s;
+  const t = new Float64Array(n), o = new Float64Array(n), h = new Float64Array(n), l = new Float64Array(n), c = new Float64Array(n);
+  let tt = raw.t0, pc = 0;
+  for (let i = 0, j = 0; i < n; i++, j += 5){
+    tt += d[j] * 60;
+    const O = pc + d[j+1], C = O + d[j+2];
+    t[i] = tt; o[i] = O / s; c[i] = C / s; h[i] = (Math.max(O, C) + d[j+3]) / s; l[i] = (Math.min(O, C) - d[j+4]) / s;
+    pc = C;
+  }
+  return {k, dur: raw.dur, n, t, o, h, l, c, v: raw.v ? Float64Array.from(raw.v) : null};
+}
+function aggTime(src, sec, k){
+  const T = [], O = [], H = [], L = [], C = [], V = src.v ? [] : null;
+  let ck = -1;
+  for (let i = 0; i < src.n; i++){
+    const b = Math.floor(src.t[i] / sec);
+    if (b !== ck){ ck = b; T.push(b * sec); O.push(src.o[i]); H.push(src.h[i]); L.push(src.l[i]); C.push(src.c[i]); if (V) V.push(src.v[i]); }
+    else { const j = T.length - 1; if (src.h[i] > H[j]) H[j] = src.h[i]; if (src.l[i] < L[j]) L[j] = src.l[i]; C[j] = src.c[i]; if (V) V[j] += src.v[i]; }
+  }
+  return {k, dur: sec, n: T.length, t: Float64Array.from(T), o: Float64Array.from(O), h: Float64Array.from(H), l: Float64Array.from(L), c: Float64Array.from(C), v: V && Float64Array.from(V)};
+}
+/* MK[key] = {key, SY, DS: {'5','15','30','60','240','D','W'}, meta, hasVol}. Mọi file dữ liệu dùng chung biến window.SILVER_DATA nên phải nạp TUẦN TỰ. */
+const MK = {}, LOADING = {};
+let loadQ = Promise.resolve();
+function queued(fn){ const p = loadQ.then(fn); loadQ = p.then(() => {}, () => {}); return p; }
+function loadScript(file){
+  return new Promise((res, rej) => {
+    window.SILVER_DATA = {};
+    const s = document.createElement('script'); s.src = 'replay_data/' + file;
+    s.onload = () => { const D = window.SILVER_DATA || {}; window.SILVER_DATA = {}; s.remove(); res(D); };
+    s.onerror = () => { window.SILVER_DATA = {}; s.remove(); rej(new Error(file)); };
+    document.head.appendChild(s);
+  });
+}
+function add5(mk, raw){ const m = decode('5', raw); mk.DS['5'] = m; mk.DS['15'] = aggTime(m, 900, '15'); mk.DS['30'] = aggTime(m, 1800, '30'); }
+function loadMarket(key){
+  if (MK[key]) return Promise.resolve(MK[key]);
+  if (LOADING[key]) return LOADING[key];
+  const sy = SYMS[key]; if (!sy) return Promise.reject(new Error(key));
+  return LOADING[key] = queued(() => loadScript(sy.file)).then(D => {
+    if (!D['D'] || !D['D'].n) throw new Error(sy.file);
+    const mk = {key, SY: sy, DS: {}, meta: D.meta || null};
+    for (const k of ['60', '240', 'D', 'W']) if (D[k] && D[k].n) mk.DS[k] = decode(k, D[k]);
+    if (D['5'] && D['5'].n) add5(mk, D['5']);
+    mk.hasVol = !!(mk.DS['60'] || mk.DS['D']).v;
+    if (mk.meta) delete mk.meta.src;
+    sy.missing = false; MK[key] = mk; delete LOADING[key];
+    return mk;
+  }).catch(e => { delete LOADING[key]; sy.missing = true; toast(t('load_fail', sy.name), 3500); throw e; });
+}
+const TFL = [
+  {k:'5', lab:'5m', small:true}, {k:'15', lab:'15m', small:true}, {k:'30', lab:'30m', small:true},
+  {k:'60', lab:'1H'}, {k:'240', lab:'4H'}, {k:'D', lab:'D'}, {k:'W', lab:'W'}];
+const tfSmall = k => k === '5' || k === '15' || k === '30';
+function tfLab(k, sy){ return k === '240' && (sy || SY).tf240 ? t('tf_sess') : (TFL.find(x => x.k === k) || {lab: k}).lab; }
+/* 5m nạp lười (mã có file 5m riêng) */
+function load5m(mk){
+  if (mk.DS['5']) return Promise.resolve();
+  if (!mk.SY.f5) return Promise.reject(new Error('no5m'));
+  if (mk.l5) return mk.l5;
+  toast(t('load5'), 20000);
+  return mk.l5 = queued(() => loadScript(mk.SY.f5)).then(D => { if (!D['5'] || !D['5'].n) throw new Error('5m'); add5(mk, D['5']); toast(t('load5_ok'), 1200); })
+    .catch(e => { mk.l5 = null; toast(t('load_fail', mk.SY.name + ' 5m'), 3000); throw e; });
+}
+function lowerBound(ds, T){ let lo = 0, hi = ds.n; while (lo < hi){ const m = (lo + hi) >> 1; if (ds.t[m] < T) lo = m + 1; else hi = m; } return lo; }
+function closedCount(ds, T){ const x = T - ds.dur; let lo = 0, hi = ds.n; while (lo < hi){ const m = (lo + hi) >> 1; if (ds.t[m] <= x) lo = m + 1; else hi = m; } return lo; }
+/* nến cơ sở (mịn nhất có tại T) của 1 mã: 5m -> 1H -> ngày */
+function baseFor(mk, T){
+  const m = mk.DS['5']; if (m && T > m.t[0] && T <= m.t[m.n-1] + m.dur) return m;
+  const h = mk.DS['60'], d = mk.DS['D']; if (!h) return d;
+  if (d && T <= h.t[0] && d.t[0] < h.t[0]) return d;
+  return h;
+}
+/* giá đóng của nến cơ sở đã đóng cuối cùng ≤ T (không nhìn trước); chưa có nến nào -> NaN */
+function priceAt(mk, T){
+  if (!mk) return NaN;
+  const b = baseFor(mk, T); let k = closedCount(b, T); if (k > 0) return b.c[k-1];
+  const d = mk.DS['D']; if (d && d !== b){ k = closedCount(d, T); if (k > 0) return d.c[k-1]; }
+  return NaN;
+}
+/* mã đang xem */
+let SYM = null, SY = null, MKA = null, DS = null, OZ = 1, VND = false, CFG = null, HASVOL = false;
+function bind(key){ SYM = key; SY = SYMS[key]; MKA = MK[key] || null; DS = MKA ? MKA.DS : null; OZ = SY.mult; VND = SY.cur === 'đ'; CFG = cfgOf(key); HASVOL = !!(MKA && MKA.hasVol); }
+
+/* ---------- chỉ báo ---------- */
+const INDS = [
+  {k:'ema20', lab:'EMA20', col:'#e0a43a'}, {k:'ema50', lab:'EMA50', col:'#4c9be8'}, {k:'sma200', lab:'SMA200', col:'#c678dd'},
+  {k:'bb', lab:'Bollinger 20/2', col:'#7f8c99'}, {k:'kc', lk:'ind_kc', col:'#26a69a'},
+  {k:'dc', lab:'Donchian 20', col:'#5aa9c8'}, {k:'st', lab:'Supertrend 10/3', col:'#2ee6a0'}, {k:'psar', lk:'ind_psar', col:'#d8e0e8'},
+  {k:'ichi', lab:'Ichimoku 9/26/52', col:'#c678dd'}, {k:'lr', lk:'ind_lr', col:'#e08a3a'},
+  {k:'zz', lk:'ind_zz', col:'#f2c94c'}, {k:'ew', lk:'ind_ew', col:'#56b6f7'}];
+/* khung phụ dưới chart: g = mức kẻ ngang (Volume chỉ có khi mã đang xem có dữ liệu khối lượng) */
+const SUBS = [
+  {k:'vol', lab:'Volume', names:['Vol', 'MA20'], cols:['#7f8c99', '#e0a43a']},
+  {k:'rsi', lab:'RSI 14', names:['RSI'], cols:['#c678dd'], g:[30, 70]},
+  {k:'macd', lab:'MACD 12/26/9', names:['MACD', 'Signal', 'Hist'], cols:['#4c9be8', '#e0a43a', '#7f8c99'], g:[0]},
+  {k:'stoch', lab:'Stochastic 14/3/3', names:['%K', '%D'], cols:['#4c9be8', '#e0a43a'], g:[20, 80]},
+  {k:'adx', lab:'ADX 14', names:['ADX', '+DI', '−DI'], cols:['#e0a43a', '#26a69a', '#ef5350'], g:[25]},
+  {k:'atr', lab:'ATR 14', names:['ATR'], cols:['#4c9be8']}];
+const subsAvail = () => SUBS.filter(x => x.k !== 'vol' || HASVOL);
+function ema(c, len){ const a = new Float64Array(c.length), k = 2 / (len + 1); let e = c[0]; for (let i = 0; i < c.length; i++){ e = i ? e + (c[i] - e) * k : c[i]; a[i] = i >= len - 1 ? e : NaN; } return a; }
+function sma(c, len){ const a = new Float64Array(c.length); let s = 0; for (let i = 0; i < c.length; i++){ s += c[i]; if (i >= len) s -= c[i-len]; a[i] = i >= len - 1 ? s / len : NaN; } return a; }
+function atr(ds, len){ const a = new Float64Array(ds.n); let v = 0; for (let i = 0; i < ds.n; i++){ const tr = i ? Math.max(ds.h[i] - ds.l[i], Math.abs(ds.h[i] - ds.c[i-1]), Math.abs(ds.l[i] - ds.c[i-1])) : ds.h[i] - ds.l[i]; v = i < len ? (v * i + tr) / (i + 1) : (v * (len - 1) + tr) / len; a[i] = v; } return a; }
+function ind(ds){
+  if (ds.ind) return ds.ind;
+  const c = ds.c, n = ds.n, I = {ema20: ema(c, 20), ema50: ema(c, 50), sma200: sma(c, 200), atr14: atr(ds, 14)};
+  const m = sma(c, 20), up = new Float64Array(n), lo = new Float64Array(n);
+  for (let i = 0; i < n; i++){ if (i < 19){ up[i] = lo[i] = NaN; continue; } let s = 0; for (let j = i - 19; j <= i; j++) s += (c[j] - m[i]) ** 2; const sd = Math.sqrt(s / 20); up[i] = m[i] + 2 * sd; lo[i] = m[i] - 2 * sd; }
+  I.bb = [up, m, lo];
+  const ku = new Float64Array(n), kl = new Float64Array(n);
+  for (let i = 0; i < n; i++){ ku[i] = I.ema20[i] + 2.5 * I.atr14[i]; kl[i] = I.ema20[i] - 2.5 * I.atr14[i]; }
+  I.kc = [ku, kl];
+  return ds.ind = I;
+}
+function roll(a, len, mx){ const n = a.length, r = new Float64Array(n).fill(NaN); for (let i = len - 1; i < n; i++){ let x = a[i]; for (let j = i - len + 1; j < i; j++) if (mx ? a[j] > x : a[j] < x) x = a[j]; r[i] = x; } return r; }
+/* chỉ báo tính lười, nhớ theo từng khung. Mọi công thức đều nhân quả (giá trị tại nến i chỉ dùng dữ liệu tới nến i). */
+function calc(ds, k){
+  const X = ds.x || (ds.x = {}); if (X[k]) return X[k];
+  const n = ds.n, c = ds.c, h = ds.h, l = ds.l, A = () => new Float64Array(n).fill(NaN);
+  let r;
+  if (k === 'rsi'){
+    const a = A(); let g = 0, d = 0;
+    for (let i = 1; i < n; i++){ const ch = c[i] - c[i-1], u = ch > 0 ? ch : 0, w = ch < 0 ? -ch : 0;
+      if (i <= 14){ g += u; d += w; if (i < 14) continue; g /= 14; d /= 14; } else { g = (g * 13 + u) / 14; d = (d * 13 + w) / 14; }
+      a[i] = d === 0 ? 100 : 100 - 100 / (1 + g / d); }
+    r = [a];
+  } else if (k === 'macd'){
+    const e1 = ema(c, 12), e2 = ema(c, 26), m = A(), sg = A(), hs = A(); let s = 0;
+    for (let i = 25; i < n; i++){ m[i] = e1[i] - e2[i]; s = i === 25 ? m[i] : s + (m[i] - s) * 0.2; if (i >= 33){ sg[i] = s; hs[i] = m[i] - s; } }
+    r = [m, sg, hs];
+  } else if (k === 'stoch'){
+    const hh = roll(h, 14, true), ll = roll(l, 14, false), raw = A();
+    for (let i = 13; i < n; i++) raw[i] = hh[i] > ll[i] ? (c[i] - ll[i]) / (hh[i] - ll[i]) * 100 : 50;
+    const K = A(), D = A();
+    for (let i = 15; i < n; i++) K[i] = (raw[i] + raw[i-1] + raw[i-2]) / 3;
+    for (let i = 17; i < n; i++) D[i] = (K[i] + K[i-1] + K[i-2]) / 3;
+    r = [K, D];
+  } else if (k === 'adx'){
+    const AD = A(), P = A(), M = A(); let trs = 0, ps = 0, ms = 0, ax = 0, cnt = 0;
+    for (let i = 1; i < n; i++){
+      const up = h[i] - h[i-1], dn = l[i-1] - l[i], pd = up > dn && up > 0 ? up : 0, md = dn > up && dn > 0 ? dn : 0,
+            tr = Math.max(h[i] - l[i], Math.abs(h[i] - c[i-1]), Math.abs(l[i] - c[i-1]));
+      if (i <= 14){ trs += tr; ps += pd; ms += md; if (i < 14) continue; } else { trs += tr - trs / 14; ps += pd - ps / 14; ms += md - ms / 14; }
+      const pdi = trs ? 100 * ps / trs : 0, mdi = trs ? 100 * ms / trs : 0, dx = pdi + mdi ? 100 * Math.abs(pdi - mdi) / (pdi + mdi) : 0;
+      P[i] = pdi; M[i] = mdi; cnt++;
+      if (cnt <= 14){ ax += dx; if (cnt === 14){ ax /= 14; AD[i] = ax; } } else { ax = (ax * 13 + dx) / 14; AD[i] = ax; }
+    }
+    r = [AD, P, M];
+  } else if (k === 'atr'){ const a = ind(ds).atr14.slice(); for (let i = 0; i < Math.min(13, n); i++) a[i] = NaN; r = [a]; }
+  else if (k === 'vol'){ r = [ds.v, sma(ds.v, 20)]; }
+  else if (k === 'dc'){ const u = roll(h, 20, true), d = roll(l, 20, false), m = A(); for (let i = 19; i < n; i++) m[i] = (u[i] + d[i]) / 2; r = [u, m, d]; }
+  else if (k === 'st'){
+    const a = atr(ds, 10), U = A(), D = A(); let fu = NaN, fl = NaN, dir = 1;
+    for (let i = 10; i < n; i++){
+      const mid = (h[i] + l[i]) / 2, bu = mid + 3 * a[i], bl = mid - 3 * a[i];
+      fu = (isNaN(fu) || bu < fu || c[i-1] > fu) ? bu : fu; fl = (isNaN(fl) || bl > fl || c[i-1] < fl) ? bl : fl;
+      if (dir > 0 && c[i] < fl) dir = -1; else if (dir < 0 && c[i] > fu) dir = 1;
+      if (dir > 0) U[i] = fl; else D[i] = fu;
+    }
+    r = [U, D];
+  } else if (k === 'psar'){
+    const R = A(); if (n > 2){ let up = c[1] >= c[0], ep = up ? h[0] : l[0], sar = up ? l[0] : h[0], af = 0.02;
+      for (let i = 1; i < n; i++){
+        sar += af * (ep - sar);
+        if (up){ sar = Math.min(sar, l[i-1], l[Math.max(0, i-2)]); if (l[i] < sar){ up = false; sar = ep; ep = l[i]; af = 0.02; } else if (h[i] > ep){ ep = h[i]; af = Math.min(0.2, af + 0.02); } }
+        else { sar = Math.max(sar, h[i-1], h[Math.max(0, i-2)]); if (h[i] > sar){ up = true; sar = ep; ep = h[i]; af = 0.02; } else if (l[i] < ep){ ep = l[i]; af = Math.min(0.2, af + 0.02); } }
+        R[i] = sar; } }
+    r = [R];
+  } else if (k === 'ichi'){
+    const mid = len => { const u = roll(h, len, true), d = roll(l, len, false), m = A(); for (let i = 0; i < n; i++) m[i] = (u[i] + d[i]) / 2; return m; };
+    const T = mid(9), K = mid(26), B = mid(52), SA = A(); for (let i = 0; i < n; i++) SA[i] = (T[i] + K[i]) / 2;
+    r = [T, K, SA, B];      // SA/B vẽ dịch +26 nến, Chikou = giá đóng vẽ dịch −26
+  }
+  return X[k] = r;
+}
+
+/* ---------- ZigZag + sóng Elliott ----------
+   ZigZag: đảo chiều khi giá đi ngược ≥ ZZK × ATR14 tính từ cực trị gần nhất. Chỉ dùng nến đã đóng (tới nc−1) nên không lộ tương lai;
+   điểm cuối là cực trị tạm (chưa chốt) và sẽ dời khi có nến mới. Tính trong cửa sổ bắt đầu ở mốc chẵn ZZB nến để kéo chart không bị nhảy. */
+const ZZK = 4, ZZB = 2000;
+function zigzag(ds, i0, nc){
+  const s = Math.max(0, (Math.floor(i0 / ZZB) - 1) * ZZB), e = nc - 1, key = s + ':' + e;
+  if (ds.zz && ds.zz.key === key) return ds.zz;
+  const h = ds.h, l = ds.l, a = ind(ds).atr14, P = [];
+  if (e - s >= 3){
+    let dir = 0, hi = s, lo = s;
+    for (let i = s + 1; i <= e; i++){
+      const thr = ZZK * a[i];
+      if (dir >= 0 && h[i] >= h[hi]) hi = i;
+      if (dir <= 0 && l[i] <= l[lo]) lo = i;
+      if (dir === 0){
+        if (hi < i && h[hi] - l[i] >= thr){ P.push({i: hi, p: h[hi], up: true}); dir = -1; lo = i; }
+        else if (lo < i && h[i] - l[lo] >= thr){ P.push({i: lo, p: l[lo], up: false}); dir = 1; hi = i; }
+      } else if (dir > 0){ if (hi < i && h[hi] - l[i] >= thr){ P.push({i: hi, p: h[hi], up: true}); dir = -1; lo = i; } }
+      else if (lo < i && h[i] - l[lo] >= thr){ P.push({i: lo, p: l[lo], up: false}); dir = 1; hi = i; }
+    }
+    if (dir > 0) P.push({i: hi, p: h[hi], up: true, tmp: true}); else if (dir < 0) P.push({i: lo, p: l[lo], up: false, tmp: true});
+  }
+  /* Elliott: quét dãy đỉnh/đáy tìm sóng đẩy 5 bước đúng 3 luật cứng (sóng 2 không vượt gốc sóng 1; sóng 3 không ngắn nhất và vượt đỉnh
+     sóng 1; sóng 4 không lấn vùng sóng 1), sóng 5 vượt đỉnh sóng 3. Sau đó gắn A-B-C nếu B không vượt đỉnh sóng 5. */
+  const L = [], np = P.length;
+  const imp = (j, m) => {            // m = số điểm cần kiểm (4..6); trả true nếu các luật áp dụng được đều đúng
+    const q = P[j], sg = q.up ? -1 : 1, d = k => (P[j + k].p - q.p) * sg;      // d(k): khoảng cách theo chiều sóng tính từ gốc
+    if (!(d(1) > 0 && d(2) > 0 && d(2) < d(1) && d(3) > d(1))) return false;
+    if (m >= 5 && !(d(4) > d(1) && d(4) < d(3))) return false;
+    if (m >= 6){ const w1 = d(1), w3 = d(3) - d(2), w5 = d(5) - d(4); if (!(d(5) > d(3)) || (w3 < w1 && w3 < w5)) return false; }
+    return true;
+  };
+  let j = 0;
+  while (j < np){
+    if (j + 5 < np && imp(j, 6)){
+      for (let k = 1; k <= 5; k++) L.push({pt: P[j + k], s: '' + k, c: 0});
+      let nx = j + 5;
+      if (j + 6 < np){
+        const top = P[j + 5], sg = top.up ? 1 : -1, okB = j + 7 >= np || (top.p - P[j + 7].p) * sg > 0;
+        if (okB){ L.push({pt: P[j + 6], s: 'A', c: 1}); nx = j + 6;
+          if (j + 7 < np){ L.push({pt: P[j + 7], s: 'B', c: 1}); nx = j + 7; }
+          if (j + 8 < np && (P[j + 6].p - P[j + 8].p) * sg > 0){ L.push({pt: P[j + 8], s: 'C', c: 1}); nx = j + 8; } }
+      }
+      j = nx; continue;
+    }
+    if (j + 3 < np && j + 5 >= np){   // đuôi dãy: sóng đẩy đang hình thành (mới có 3 hoặc 4 sóng)
+      const m = np - j;
+      if (m >= 4 && imp(j, Math.min(m, 5))){ for (let k = 1; k < m; k++) L.push({pt: P[j + k], s: '' + k, c: 2}); break; }
+    }
+    j++;
+  }
+  return ds.zz = {key, P, L};
+}
+
+/* ---------- trạng thái ---------- */
+const S = Object.assign({tf: '60', barW: 8, rightIdx: 0, auto: true, pMin: 0, pMax: 1, tool: 'cursor', magnet: true, color: '#e0a43a',
+  inds: {ema20: true, ema50: false, sma200: false, bb: false, kc: false}, subs: {}, sel: null, mouse: null},
+  LS.get('sg_ui', {}), {sel: null, mouse: null, tool: 'cursor'});
+if (!TFL.some(x => x.k === S.tf)) S.tf = '60';
+let MODE = 'deriv';                          // chế độ đang chọn: deriv | stock
+/* phiên luyện tập (v2):
+   {v, id, mode, cur, syms, active, tf, blind, T, startT, cash0, cash, pos: {key: {side, qty, avg, sl, tp, trade}}, trades, eq: [[T, equity]], peak, maxDD, draws: {key: []}, bh0: {key: giá lúc bắt đầu}, bars, barsIn} */
+let TR = null;
+let LAST = null;                             // phiên vừa kết thúc (để xem lại / tổng kết)
+const FREE = {};                             // hình vẽ khi không có phiên, theo từng mã
+let JOURNAL = LS.get('sg_journal', []); if (!Array.isArray(JOURNAL)) JOURNAL = [];
+const CAP = Object.assign({}, CAP0); { const u = LS.get('sg_cap', null); if (u && typeof u === 'object') for (const c in CAP0) if (u[c] > 0) CAP[c] = +u[c]; }
+const BASKET = {}; { const u = LS.get('sg_basket', null) || {};
+  for (const m in BASKET0){ const a = Array.isArray(u[m]) ? u[m].filter((k, i, arr) => SYMS[k] && SYMS[k].mkt === m && arr.indexOf(k) === i) : []; BASKET[m] = a.length ? a : BASKET0[m].slice(); } }
+let VIEW = null, PR = {min: 0, max: 1}, need = false, autoTimer = null;
+const draws = () => TR ? (TR.draws[SYM] || (TR.draws[SYM] = [])) : (FREE[SYM] || (FREE[SYM] = LS.get('sg_draw_' + SYM, [])));
+function saveUI(){ LS.set('sg_ui', {tf: S.tf, barW: S.barW, inds: S.inds, subs: S.subs, magnet: S.magnet, color: S.color}); }
+function saveDraws(){ if (TR) saveTR(); else LS.set('sg_draw_' + SYM, draws()); }
+function saveTR(){ if (TR) LS.set('sg_session', TR); else LS.del('sg_session'); }
+function invalidate(){ VIEW = null; req(); }
+const POS0 = () => ({side: 0, qty: 0, avg: 0, sl: null, tp: null, trade: null});
+function posOf(key){ return TR.pos[key] || (TR.pos[key] = POS0()); }
+const openKeys = () => TR ? Object.keys(TR.pos).filter(k => TR.pos[k].qty > 0) : [];
+
+function view(){
+  if (VIEW) return VIEW;
+  const ds = DS && DS[S.tf];
+  if (!ds) return VIEW = {ds: null, n: 0, nc: 0, P: null};
+  if (!TR) return VIEW = {ds, n: ds.n, nc: ds.n, P: null};
+  const T = TR.T, nc = closedCount(ds, T);
+  let P = null;
+  if (nc < ds.n && ds.t[nc] < T){
+    const b = baseFor(MKA, T), i0 = lowerBound(b, ds.t[nc]), i1 = closedCount(b, T);
+    if (i1 > i0 && b !== ds){
+      let h = -Infinity, l = Infinity, vv = 0; for (let i = i0; i < i1; i++){ if (b.h[i] > h) h = b.h[i]; if (b.l[i] < l) l = b.l[i]; if (b.v) vv += b.v[i]; }
+      P = {t: ds.t[nc], o: b.o[i0], h, l, c: b.c[i1-1], v: vv};
+    }
+  }
+  return VIEW = {ds, nc, n: nc + (P ? 1 : 0), P};
+}
+const bo = (v, i) => i < v.nc ? v.ds.o[i] : v.P.o, bh = (v, i) => i < v.nc ? v.ds.h[i] : v.P.h,
+      bl = (v, i) => i < v.nc ? v.ds.l[i] : v.P.l, bc = (v, i) => i < v.nc ? v.ds.c[i] : v.P.c;
+function curPrice(key){ return priceAt(MK[key || SYM], TR.T); }
+function curATR(){ const v = view(); if (!v.ds || v.nc < 15) return NaN; return ind(v.ds).atr14[v.nc - 1]; }
+
+/* ---------- định dạng (theo ngôn ngữ: vi = giờ Việt Nam, dd/mm/yyyy; en = giờ New York có DST, yyyy-mm-dd) ---------- */
+const p2 = x => String(x).padStart(2, '0');
+const LOC = () => LANG === 'vi' ? 'vi-VN' : 'en-US';
+const DSTC = {};
+function nthSun(y, m, n){ return 1 + (7 - new Date(Date.UTC(y, m, 1)).getUTCDay()) % 7 + (n - 1) * 7; }
+function nyOff(x){   // DST Mỹ: Chủ nhật thứ 2 của tháng 3 (2:00 EST = 07:00 UTC) -> Chủ nhật đầu tháng 11 (2:00 EDT = 06:00 UTC)
+  const y = new Date(x * 1000).getUTCFullYear(), r = DSTC[y] || (DSTC[y] = [Date.UTC(y, 2, nthSun(y, 2, 2), 7) / 1000, Date.UTC(y, 10, nthSun(y, 10, 1), 6) / 1000]);
+  return x >= r[0] && x < r[1] ? -4 * 3600 : -5 * 3600;
+}
+function tzOff(x){ return LANG === 'vi' ? 7 * 3600 : nyOff(x); }
+function localToT(y, mo, d, hh, mm){ const u = Date.UTC(y, mo - 1, d, hh || 0, mm || 0) / 1000; return u - tzOff(u - tzOff(u)); }   // giờ địa phương hiển thị -> epoch
+/* day = true: x là giờ MỞ của nến ngày/tuần -> trả về NGÀY GIAO DỊCH của phiên (giờ mở + 6h theo UTC đúng ngày ở mọi thị trường:
+   futures CME mở 22-23h UTC hôm trước, ngoại tệ 21-22h, cổ phiếu Mỹ 13:30-14:30, HSX/VN30 02:00, BTC 00:00), không phụ thuộc múi giờ hiển thị */
+function vd(x, day){ return new Date((x + (day ? 21600 : tzOff(x))) * 1000); }
+function fDate(x, day){ const d = vd(x, day), Y = d.getUTCFullYear(), M = p2(d.getUTCMonth() + 1), D = p2(d.getUTCDate()); return LANG === 'vi' ? D + '/' + M + '/' + Y : Y + '-' + M + '-' + D; }
+function fDM(x, day){ const d = vd(x, day), M = p2(d.getUTCMonth() + 1), D = p2(d.getUTCDate()); return LANG === 'vi' ? D + '/' + M : M + '-' + D; }
+function fMY(x, day){ const d = vd(x, day), M = p2(d.getUTCMonth() + 1), Y = d.getUTCFullYear(); return LANG === 'vi' ? M + '/' + Y : Y + '-' + M; }
+function fLocalDS(ms){ const d = new Date(ms), Y = d.getFullYear(), M = p2(d.getMonth() + 1), D = p2(d.getDate()); return LANG === 'vi' ? D + '/' + M + '/' + p2(Y % 100) : Y + '-' + M + '-' + D; }   // thời điểm THẬT người dùng chơi: giờ máy, không phải giờ sàn
+function fDS(x, day){ const d = vd(x, day), Y = p2(d.getUTCFullYear() % 100), M = p2(d.getUTCMonth() + 1), D = p2(d.getUTCDate()); return LANG === 'vi' ? D + '/' + M + '/' + Y : d.getUTCFullYear() + '-' + M + '-' + D; }
+function fHM(x){ const d = vd(x); return p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()); }
+function fDow(x, day){ return t('dow').split(',')[vd(x, day).getUTCDay()]; }
+function fFull(x, blind){ return fDow(x) + ' ' + (blind ? '' : fDate(x) + ' ') + fHM(x); }
+function yearOf(x){ return vd(x).getUTCFullYear(); }
+/* số có d chữ số thập phân theo ngôn ngữ (vi: 1.234,56 · en: 1,234.56); grp = có dấu tách nghìn */
+const NFC = {};
+function fx(x, d, grp){ const k = LANG + d + (grp ? 'g' : ''); return (NFC[k] || (NFC[k] = new Intl.NumberFormat(LOC(), {minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: !!grp}))).format(x).replace('-', '−'); }
+const fP = (p, sy) => isFinite(p) ? fx(p, (sy || SY).dp, true) : '–';
+const fQ = q => (+(+q).toFixed(4)).toLocaleString(LOC(), {maximumFractionDigits: 4});
+const fInt = x => Math.round(x).toLocaleString(LOC());
+const curNow = () => TR ? TR.cur : SY.cur;                       // tiền của phiên (hoặc của mã đang xem)
+const curSym = c => c === 'đ' ? (LANG === 'vi' ? 'đ' : '₫') : '$';
+/* tiền: mã tính bằng $ hoặc đ; không dấu */
+function fM(x, d, cur){
+  cur = cur || curNow();
+  if (cur === 'đ') return fInt(x) + ' ' + curSym(cur);
+  const s = x.toLocaleString(LOC(), {minimumFractionDigits: d == null ? 2 : d, maximumFractionDigits: d == null ? 2 : d});
+  return LANG === 'vi' ? s + ' $' : '$' + s;
+}
+function fN(x, cur){   // số gọn trong bảng
+  cur = cur || curNow(); const a = Math.abs(x), sg = x < 0 ? '−' : '';
+  if (cur === 'đ') return sg + (a >= 1e6 ? (a / 1e6).toLocaleString(LOC(), {maximumFractionDigits: 2}) + (LANG === 'vi' ? 'tr' : 'M') : (a / 1000).toLocaleString(LOC(), {maximumFractionDigits: 0}) + 'k');
+  return sg + (a >= 1000 ? fInt(a) : fx(a, 1));
+}
+const fU = (x, cur) => (x >= 0 ? '+' : '−') + fM(Math.abs(x), null, cur);
+const fV = (x, cur) => LANG !== 'vi' || (cur || curNow()) === 'đ' ? '' : (x >= 0 ? '+' : '−') + Math.round(Math.abs(x) * FX_VND).toLocaleString('vi-VN') + ' ' + curSym('đ');   // dòng quy đổi VNĐ (chỉ tiếng Việt, mã tính bằng $)
+const fPc = x => (x >= 0 ? '+' : '−') + fx(Math.abs(x), 2) + '%';
+const cls = x => x > 0 ? 'pos' : x < 0 ? 'neg' : '';
+const qUnit = sy => t((sy || SY).qu);
+const sideName = (s, mode) => (mode || (TR ? TR.mode : MODE)) === 'stock' ? (s > 0 ? t('b_buy') : t('b_sell')) : (s > 0 ? 'LONG' : 'SHORT');
+const blindNow = () => !!(TR && TR.blind);
+function toast(msg, ms){ const e = $('toast'); e.textContent = msg; e.style.display = 'block'; clearTimeout(e._t); e._t = setTimeout(() => e.style.display = 'none', ms || 1800); }
+
+/* ---------- canvas, toạ độ ---------- */
+const cv = $('cv'), ctx = cv.getContext('2d');
+let W = 0, H = 0;
+const AXW = 70, TAXH = 24;
+const subList = () => subsAvail().filter(x => S.subs[x.k]);
+const subH = () => { const n = subList().length; return n ? Math.max(44, Math.min(110, Math.floor((H - TAXH) * 0.5 / n))) : 0; };
+const pw = () => W - AXW, ph = () => H - TAXH - subH() * subList().length;   // ph = đáy khung giá; khung phụ nằm giữa ph và H − TAXH
+function resize(){ const r = cv.parentElement.getBoundingClientRect(), dpr = window.devicePixelRatio || 1; W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); req(); }
+const xOf = i => pw() - (S.rightIdx - i) * S.barW;
+const iOf = x => S.rightIdx - (pw() - x) / S.barW;
+const yOf = p => (PR.max - p) / (PR.max - PR.min) * ph();
+const pOf = y => PR.max - y / ph() * (PR.max - PR.min);
+function timeToIdx(T){
+  const v = view(), ds = v.ds, n = v.n; if (!n) return 0;
+  if (T >= ds.t[n-1]) return n - 1 + (T - ds.t[n-1]) / ds.dur;
+  if (T <= ds.t[0]) return (T - ds.t[0]) / ds.dur;
+  let lo = 0, hi = n - 1; while (lo < hi){ const m = (lo + hi + 1) >> 1; if (ds.t[m] <= T) lo = m; else hi = m - 1; }
+  return lo + Math.min(0.999, (T - ds.t[lo]) / ds.dur);
+}
+function idxToTime(x){
+  const v = view(), ds = v.ds, n = v.n; if (!n) return 0;
+  if (x <= 0) return ds.t[0] + x * ds.dur;
+  if (x >= n - 1) return ds.t[n-1] + (x - n + 1) * ds.dur;
+  const i = Math.floor(x); return ds.t[i] + (x - i) * ds.dur;
+}
+function clampView(){ const v = view(); const vis = pw() / S.barW; S.rightIdx = Math.max(Math.min(S.rightIdx, v.n - 1 + vis * 0.85), Math.min(vis * 0.15, v.n)); }
+function req(){ if (!need){ need = true; requestAnimationFrame(draw); } }
+
+/* ---------- vẽ ---------- */
+function niceStep(raw){ const p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; }
+function draw(){
+  need = false;
+  { const r = cv.parentElement.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;   // WebView Android có thể báo kích thước sai lúc mới mở
+    if (Math.abs(r.width - W) > 0.5 || Math.abs(r.height - H) > 0.5 || cv.width !== Math.round(W * dpr)){ W = r.width; H = r.height; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); } }
+  ctx.fillStyle = '#0f141b'; ctx.fillRect(0, 0, W, H);
+  const v = view();
+  if (!v.ds){ ctx.fillStyle = '#93a1ae'; ctx.font = '13px system-ui'; ctx.textAlign = 'left'; ctx.fillText(t('loading'), 20, 30); $('legend').textContent = ''; return; }
+  clampView();
+  const PW = pw(), PH = ph(), BY = H - TAXH, bw = S.barW, ds = v.ds, blind = blindNow();
+  const i0 = Math.max(0, Math.floor(iOf(0))), i1 = Math.min(v.n - 1, Math.ceil(iOf(PW)));
+  if (S.auto){
+    let mn = Infinity, mx = -Infinity;
+    for (let i = i0; i <= i1; i++){ const h = bh(v, i), l = bl(v, i); if (h > mx) mx = h; if (l < mn) mn = l; }
+    if (TR){ const q = posOf(SYM); if (q.qty) for (const p of [q.sl, q.tp, q.avg]) if (p != null){ mn = Math.min(mn, p); mx = Math.max(mx, p); } }
+    if (!isFinite(mn)){ mn = 0; mx = 1; }
+    const pad = (mx - mn) * 0.07 || 0.1; PR.min = mn - pad; PR.max = mx + pad; S.pMin = PR.min; S.pMax = PR.max;
+  } else { PR.min = S.pMin; PR.max = S.pMax; }
+
+  ctx.font = '11px ui-monospace,Consolas,monospace'; ctx.textBaseline = 'middle';
+  // lưới giá
+  const step = niceStep((PR.max - PR.min) / Math.max(2, PH / 55));
+  ctx.strokeStyle = '#1b232d'; ctx.lineWidth = 1; ctx.fillStyle = '#7f8c99'; ctx.textAlign = 'left';
+  for (let p = Math.ceil(PR.min / step) * step; p < PR.max; p += step){ const y = Math.round(yOf(p)) + .5; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(PW, y); ctx.stroke(); ctx.fillText(fx(p, step < 0.01 ? 3 : step < 0.1 ? 2 : step < 1 ? 1 : 0, true), PW + 6, y); }
+  // lưới thời gian
+  const tsteps = [1, 2, 3, 4, 6, 8, 12, 16, 24, 48, 72, 96, 144, 288, 576, 1152, 2304, 4608];
+  const ts = tsteps.find(s => s * bw >= 90) || 9216;
+  ctx.textAlign = 'center';
+  const dayTF = ds.dur >= 86400;
+  let lastLab = null;
+  for (let i = Math.floor(i0 / ts) * ts; i <= i1 + ts; i += ts){
+    if (i < 0 || i >= v.n) continue;
+    const x = Math.round(xOf(i)) + .5; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, BY); ctx.stroke();
+    const t = ds.t[i]; let lab;
+    if (blind) lab = dayTF ? fDow(t, true) : fHM(t);
+    else if (ds.dur >= 7 * 86400 || ts * ds.dur > 40 * 86400) lab = fMY(t, dayTF);
+    else if (dayTF || ts * ds.dur >= 86400){ const d = vd(t, dayTF); lab = d.getUTCMonth() === 0 && d.getUTCDate() <= 7 ? fDS(t, dayTF) : fDM(t, dayTF); }
+    else { const dd = fDate(t); lab = dd !== lastLab ? fDM(t) + ' ' + fHM(t) : fHM(t); lastLab = dd; }
+    ctx.fillText(lab, x, BY + 12);
+  }
+  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, PW, PH); ctx.clip();
+  // vùng bị che (tương lai)
+  if (TR){
+    const xf = xOf(v.n - 0.5);
+    if (xf < PW){ ctx.fillStyle = 'rgba(76,155,232,.05)'; ctx.fillRect(xf, 0, PW - xf, PH); ctx.strokeStyle = 'rgba(76,155,232,.45)'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(xf, 0); ctx.lineTo(xf, PH); ctx.stroke(); ctx.setLineDash([]); }
+  }
+  // chỉ báo (chỉ trên nến đã đóng)
+  const I = (Object.values(S.inds).some(Boolean)) ? ind(ds) : null;
+  const line = (arr, col, w) => { ctx.strokeStyle = col; ctx.lineWidth = w || 1.2; ctx.beginPath(); let pen = false; const e = Math.min(i1, v.nc - 1); for (let i = i0; i <= e; i++){ const a = arr[i]; if (!isFinite(a)){ pen = false; continue; } const x = xOf(i), y = yOf(a); if (pen) ctx.lineTo(x, y); else { ctx.moveTo(x, y); pen = true; } } ctx.stroke(); };
+  if (I){
+    if (S.inds.bb){ line(I.bb[0], '#5d6b78'); line(I.bb[1], '#4a5663'); line(I.bb[2], '#5d6b78'); }
+    if (S.inds.kc){ line(I.kc[0], 'rgba(38,166,154,.8)'); line(I.kc[1], 'rgba(38,166,154,.45)'); }
+    if (S.inds.sma200) line(I.sma200, '#c678dd', 1.4);
+    if (S.inds.ema50) line(I.ema50, '#4c9be8');
+    if (S.inds.ema20) line(I.ema20, '#e0a43a');
+  }
+  if (S.inds.dc){ const D = calc(ds, 'dc'); line(D[0], '#5aa9c8'); line(D[1], 'rgba(90,169,200,.4)'); line(D[2], '#5aa9c8'); }
+  if (S.inds.ichi){
+    const [T, K, SA, SB] = calc(ds, 'ichi'), OFF = 26, jr = Math.ceil(iOf(PW));
+    const lineOff = (arr, off, col, w) => { ctx.strokeStyle = col; ctx.lineWidth = w || 1.1; ctx.beginPath(); let pen = false; const e = Math.min(jr, v.nc - 1 + off); for (let j = Math.max(i0, off); j <= e; j++){ const a = arr[j - off]; if (!isFinite(a)){ pen = false; continue; } const x = xOf(j), y = yOf(a); if (pen) ctx.lineTo(x, y); else { ctx.moveTo(x, y); pen = true; } } ctx.stroke(); };
+    { const e = Math.min(jr, v.nc - 1 + OFF), s0 = Math.max(i0, OFF + 51); if (e > s0){ ctx.fillStyle = 'rgba(198,120,221,.07)'; ctx.beginPath(); for (let j = s0; j <= e; j++) ctx.lineTo(xOf(j), yOf(SA[j - OFF])); for (let j = e; j >= s0; j--) ctx.lineTo(xOf(j), yOf(SB[j - OFF])); ctx.closePath(); ctx.fill(); } }
+    lineOff(SA, OFF, 'rgba(38,166,154,.75)'); lineOff(SB, OFF, 'rgba(239,83,80,.75)');
+    lineOff(ds.c, -OFF, 'rgba(147,161,174,.6)'); line(K, '#c94442', 1.3); line(T, '#4c9be8', 1.3);
+  }
+  if (S.inds.st){ const T = calc(ds, 'st'); line(T[0], '#2ee6a0', 1.7); line(T[1], '#ff6b6b', 1.7); }
+  if (S.inds.psar){ const R = calc(ds, 'psar')[0], e = Math.min(i1, v.nc - 1), rr = Math.max(1, Math.min(2.2, bw * 0.22)); for (let i = i0; i <= e; i++){ const a = R[i]; if (!isFinite(a)) continue; ctx.fillStyle = a < ds.c[i] ? '#2ee6a0' : '#ff6b6b'; ctx.beginPath(); ctx.arc(xOf(i), yOf(a), rr, 0, 6.2832); ctx.fill(); } }
+  if (S.inds.lr && v.nc >= 100){
+    const N = 100, e = v.nc - 1, s0 = e - N + 1; let sx = 0, sy = 0, sxx = 0, sxy = 0;
+    for (let j = 0; j < N; j++){ const y = ds.c[s0 + j]; sx += j; sy += y; sxx += j * j; sxy += j * y; }
+    const b = (N * sxy - sx * sy) / (N * sxx - sx * sx), a = (sy - b * sx) / N; let ss = 0;
+    for (let j = 0; j < N; j++) ss += (ds.c[s0 + j] - a - b * j) ** 2;
+    const sd = Math.sqrt(ss / N), xa = xOf(s0), xb = xOf(e);
+    for (const [m, al, dash] of [[2, .9, []], [0, .6, [4, 4]], [-2, .9, []]]){ ctx.strokeStyle = 'rgba(224,138,58,' + al + ')'; ctx.lineWidth = 1.3; ctx.setLineDash(dash); ctx.beginPath(); ctx.moveTo(xa, yOf(a + m * sd)); ctx.lineTo(xb, yOf(a + b * (N - 1) + m * sd)); ctx.stroke(); }
+    ctx.setLineDash([]);
+  }
+  if ((S.inds.zz || S.inds.ew) && v.nc > 20){
+    const Z = zigzag(ds, i0, v.nc), P = Z.P;
+    if (P.length > 1){
+      ctx.lineWidth = S.inds.zz ? 1.5 : 1; ctx.strokeStyle = S.inds.zz ? '#f2c94c' : 'rgba(242,201,76,.35)';
+      let a = 0; while (a + 1 < P.length && P[a + 1].i < i0) a++;
+      ctx.beginPath(); ctx.moveTo(xOf(P[a].i), yOf(P[a].p));
+      for (let k = a + 1; k < P.length && !P[k].tmp; k++){ ctx.lineTo(xOf(P[k].i), yOf(P[k].p)); if (P[k].i > i1) break; }
+      ctx.stroke();
+      const z = P[P.length - 1], y = P[P.length - 2];
+      if (z.tmp && y.i <= i1){ ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(xOf(y.i), yOf(y.p)); ctx.lineTo(xOf(z.i), yOf(z.p)); ctx.stroke(); ctx.setLineDash([]); }
+    }
+    if (S.inds.ew){
+      ctx.font = 'bold 12px system-ui,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (const q of Z.L){ if (q.pt.i < i0 - 2 || q.pt.i > i1 + 2) continue;
+        const x = xOf(q.pt.i), yy = yOf(q.pt.p) + (q.pt.up ? -13 : 13), col = q.c === 1 ? '#f2994a' : q.c === 2 ? '#8fb9d9' : '#56b6f7';
+        ctx.fillStyle = '#0f141b'; ctx.beginPath(); ctx.arc(x, yy, 9, 0, 6.2832); ctx.fill();
+        ctx.strokeStyle = col; ctx.lineWidth = 1.3; if (q.c === 2 || q.pt.tmp) ctx.setLineDash([3, 2]); ctx.beginPath(); ctx.arc(x, yy, 9, 0, 6.2832); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = col; ctx.fillText(q.s, x, yy + 0.5); }
+      ctx.font = '11px ui-monospace,Consolas,monospace';
+    }
+  }
+  // nến
+  const body = Math.max(1, Math.min(bw * 0.72, bw - 1));
+  for (const up of [true, false]){
+    ctx.strokeStyle = ctx.fillStyle = up ? '#26a69a' : '#ef5350'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = i0; i <= i1; i++){ const o = bo(v, i), c = bc(v, i); if ((c >= o) !== up) continue; const x = Math.round(xOf(i)) + .5; ctx.moveTo(x, yOf(bh(v, i))); ctx.lineTo(x, yOf(bl(v, i))); }
+    ctx.stroke();
+    if (bw >= 3) for (let i = i0; i <= i1; i++){ const o = bo(v, i), c = bc(v, i); if ((c >= o) !== up) continue; const y0 = yOf(Math.max(o, c)), y1 = yOf(Math.min(o, c)); ctx.fillRect(Math.round(xOf(i) - body / 2), y0, Math.max(1, Math.round(body)), Math.max(1, y1 - y0)); }
+  }
+  if (v.P){ const x = xOf(v.n - 1); ctx.fillStyle = 'rgba(224,164,58,.9)'; ctx.font = '10px system-ui'; ctx.textAlign = 'center'; ctx.fillText(t('running'), x, yOf(v.P.h) - 8); ctx.font = '11px ui-monospace,Consolas,monospace'; }
+  drawTrades(v);
+  drawDrawings(v);
+  ctx.restore();
+  drawPosLines(v);
+  drawSubs(v, i0, i1);
+  // giá cuối
+  if (v.n){ const lc = bc(v, v.n - 1), up = lc >= bo(v, v.n - 1); axisTag(lc, up ? '#26a69a' : '#ef5350'); const y = Math.min(yOf(lc), PH); ctx.strokeStyle = up ? 'rgba(38,166,154,.5)' : 'rgba(239,83,80,.5)'; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(PW, y); ctx.stroke(); ctx.setLineDash([]); }
+  // crosshair
+  const m = S.mouse;
+  if (m && m.x < PW && m.y < BY){
+    ctx.strokeStyle = 'rgba(200,210,220,.35)'; ctx.setLineDash([3, 3]); ctx.beginPath(); if (m.y < PH){ ctx.moveTo(0, m.y + .5); ctx.lineTo(PW, m.y + .5); } ctx.moveTo(m.x + .5, 0); ctx.lineTo(m.x + .5, BY); ctx.stroke(); ctx.setLineDash([]);
+    if (m.y < PH) axisTag(pOf(m.y), '#3a4757');
+    const ii = Math.round(iOf(m.x)), t = idxToTime(ii);
+    if (!TR || ii < v.n){ const lab = ds.dur >= 86400 ? (blind ? fDow(t, true) : fDow(t, true) + ' ' + fDate(t, true)) : fFull(t, blind); ctx.font = '11px ui-monospace,Consolas,monospace'; const w = ctx.measureText(lab).width + 12; ctx.fillStyle = '#3a4757'; ctx.fillRect(m.x - w / 2, BY + 1, w, TAXH - 2); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(lab, m.x, BY + 12); }
+  }
+  ctx.strokeStyle = '#2a3542'; ctx.beginPath(); ctx.moveTo(PW + .5, 0); ctx.lineTo(PW + .5, H); ctx.moveTo(0, BY + .5); ctx.lineTo(W, BY + .5); ctx.stroke();
+  legend(v);
+}
+/* khung chỉ báo phụ (chỉ vẽ trên nến đã đóng; riêng Volume vẽ mờ thêm nến đang chạy) */
+function drawSubs(v, i0, i1){
+  const L = subList(); if (!L.length) return;
+  const PW = pw(), sh = subH(), ds = v.ds, e = Math.min(i1, v.nc - 1), m = S.mouse, bw = S.barW, MONO = '11px ui-monospace,Consolas,monospace';
+  let hi = v.nc - 1; if (m && m.x < PW){ const q = Math.round(iOf(m.x)); if (q >= 0 && q < v.nc) hi = q; }
+  const num = (x, k) => !isFinite(x) ? '–' : k === 'vol' ? Math.round(x).toLocaleString(LOC()) : (k === 'atr' || k === 'macd') ? fx(x, SY.dp, true) : fx(x, 1);
+  L.forEach((sp, q) => {
+    const y0 = ph() + q * sh, k = sp.k, A = calc(ds, k);
+    let lo = Infinity, top = -Infinity;
+    if (k === 'rsi' || k === 'stoch'){ lo = 0; top = 100; }
+    else {
+      for (const a of A) for (let i = i0; i <= e; i++){ const x = a[i]; if (isFinite(x)){ if (x < lo) lo = x; if (x > top) top = x; } }
+      if (k === 'vol' && v.P && v.P.v > top) top = v.P.v;
+      if (!isFinite(lo)){ lo = 0; top = 1; }
+      if (k === 'vol' || k === 'adx'){ lo = 0; top = Math.max(top, k === 'adx' ? 40 : 1) * 1.06; }
+      else { const pad = (top - lo) * 0.08 || Math.abs(top) * 0.01 || 1; lo -= pad; top += pad; }
+    }
+    const Y = x => y0 + 4 + (top - x) / (top - lo) * (sh - 8);
+    ctx.strokeStyle = '#2a3542'; ctx.lineWidth = 1; ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(0, y0 + .5); ctx.lineTo(W, y0 + .5); ctx.stroke();
+    ctx.save(); ctx.beginPath(); ctx.rect(0, y0 + 1, PW, sh - 1); ctx.clip();
+    ctx.strokeStyle = 'rgba(147,161,174,.3)'; ctx.setLineDash([3, 4]);
+    for (const g of sp.g || []){ const y = Math.round(Y(g)) + .5; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(PW, y); ctx.stroke(); }
+    ctx.setLineDash([]);
+    const ln = (arr, col, w) => { ctx.strokeStyle = col; ctx.lineWidth = w || 1.2; ctx.beginPath(); let pen = false; for (let i = i0; i <= e; i++){ const a = arr[i]; if (!isFinite(a)){ pen = false; continue; } const x = xOf(i), y = Y(a); if (pen) ctx.lineTo(x, y); else { ctx.moveTo(x, y); pen = true; } } ctx.stroke(); };
+    const bars = (arr, colf, base) => { const w = Math.max(1, Math.round(Math.min(bw * 0.72, bw - 1))), yb = Y(base); for (let i = i0; i <= e; i++){ const a = arr[i]; if (!isFinite(a)) continue; const y = Y(a); ctx.fillStyle = colf(i, a); ctx.fillRect(Math.round(xOf(i) - w / 2), Math.min(y, yb), w, Math.max(1, Math.abs(y - yb))); } };
+    if (k === 'vol'){
+      bars(A[0], i => ds.c[i] >= ds.o[i] ? 'rgba(38,166,154,.75)' : 'rgba(239,83,80,.75)', 0);
+      if (v.P && v.P.v){ const w = Math.max(1, Math.round(Math.min(bw * 0.72, bw - 1))), y = Y(v.P.v); ctx.fillStyle = 'rgba(224,164,58,.45)'; ctx.fillRect(Math.round(xOf(v.n - 1) - w / 2), y, w, Y(0) - y); }
+      ln(A[1], sp.cols[1]);
+    } else if (k === 'macd'){ bars(A[2], (i, a) => a >= 0 ? 'rgba(38,166,154,.6)' : 'rgba(239,83,80,.6)', 0); ln(A[0], sp.cols[0]); ln(A[1], sp.cols[1]); }
+    else for (let j = A.length - 1; j >= 0; j--) ln(A[j], sp.cols[j], j ? 1 : 1.5);
+    // nhãn + giá trị tại nến đang trỏ (hoặc nến đóng gần nhất)
+    ctx.font = MONO; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    let x = 6; const put = (t, col) => { ctx.fillStyle = col; ctx.fillText(t, x, y0 + 10); x += ctx.measureText(t).width + 8; };
+    const parts = [[sp.lab, '#93a1ae']]; if (hi >= 0) A.forEach((a, j) => parts.push([(A.length > 1 ? sp.names[j] + ' ' : '') + num(a[hi], k), sp.cols[j]]));
+    const tw = parts.reduce((t, pz) => t + ctx.measureText(pz[0]).width + 8, 0); ctx.fillStyle = 'rgba(15,20,27,.75)'; ctx.fillRect(2, y0 + 2, tw + 4, 16);
+    for (const pz of parts) put(pz[0], pz[1]);
+    ctx.restore();
+    // trục phải
+    ctx.font = '10px ui-monospace,Consolas,monospace'; ctx.fillStyle = '#7f8c99'; ctx.textAlign = 'left';
+    const short = x => k === 'vol' ? (x >= 1e6 ? fx(x / 1e6, 1) + 'M' : x >= 1e3 ? (x / 1e3).toFixed(0) + 'k' : x.toFixed(0)) : num(x, k);
+    for (const g of sp.g || [lo + (top - lo) * 0.8, lo + (top - lo) * 0.2]) ctx.fillText(short(g), PW + 6, Y(g));
+    if (m && m.x < PW && m.y > y0 && m.y < y0 + sh){
+      const val = top - (m.y - y0 - 4) / (sh - 8) * (top - lo);
+      ctx.strokeStyle = 'rgba(200,210,220,.35)'; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(0, m.y + .5); ctx.lineTo(PW, m.y + .5); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = '#3a4757'; ctx.fillRect(PW + 1, m.y - 8, AXW - 1, 16); ctx.fillStyle = '#fff'; ctx.fillText(short(val), PW + 5, m.y);
+    }
+    ctx.font = MONO;
+  });
+}
+function axisTag(p, col, txt){ const y = yOf(p); if (y < -8 || y > ph() + 8) return; ctx.fillStyle = col; ctx.fillRect(pw() + 1, y - 9, AXW - 1, 18); ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.font = '11px ui-monospace,Consolas,monospace'; ctx.fillText(txt || fP(p), pw() + 5, y); }
+function legend(v){
+  const m = S.mouse; let i = v.n - 1;
+  if (m && m.x < pw()){ const k = Math.round(iOf(m.x)); if (k >= 0 && k < v.n) i = k; }
+  if (i < 0){ $('legend').textContent = ''; return; }
+  const o = bo(v, i), h = bh(v, i), l = bl(v, i), c = bc(v, i), pc = i ? bc(v, i - 1) : o, ch = (c / pc - 1) * 100;
+  const tf = tfLab(S.tf);
+  let s = `<b>${SY.name} · ${tf}</b>  ${v.ds.dur >= 86400 ? fDow(v.ds.t[i], true) + (blindNow() ? '' : ' ' + fDate(v.ds.t[i], true)) : fFull(v.ds.t[i], blindNow())}  O <b>${fP(o)}</b> H <b>${fP(h)}</b> L <b>${fP(l)}</b> C <b>${fP(c)}</b> <span class="${cls(ch)}">${fPc(ch)}</span>`;
+  if (i < v.nc){ const I = v.ds.ind || (S.inds.kc || TR ? ind(v.ds) : null); if (I) s += `  ATR14 <b>${fP(I.atr14[i])}</b>`; }
+  $('legend').innerHTML = s;
+}
+
+/* lệnh trên chart */
+function drawTrades(v){
+  const sess = TR || LAST; if (!sess) return;     // chỉ lệnh của mã đang xem; sau khi kết thúc vẫn hiện để xem lại
+  const all = sess.trades.filter(x => x.sym === SYM), op = TR && TR.pos[SYM] && TR.pos[SYM].trade; if (op) all.push(op);
+  for (const tr of all){
+    const f0 = tr.fills[0], fl = tr.fills[tr.fills.length - 1];
+    if (tr.end != null){ const net = tr.realized - tr.fees; ctx.strokeStyle = net >= 0 ? 'rgba(38,166,154,.7)' : 'rgba(239,83,80,.7)'; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(xOf(Math.floor(timeToIdx(f0.t))), yOf(f0.px)); ctx.lineTo(xOf(Math.floor(timeToIdx(fl.t))), yOf(fl.px)); ctx.stroke(); ctx.setLineDash([]); }
+    for (const f of tr.fills){
+      const x = xOf(Math.floor(timeToIdx(f.t))), y = yOf(f.px), s = 7;
+      ctx.fillStyle = f.side > 0 ? '#2ee6a0' : '#ff6b6b'; ctx.beginPath();
+      if (f.side > 0){ ctx.moveTo(x, y); ctx.lineTo(x - s, y + s * 1.5); ctx.lineTo(x + s, y + s * 1.5); }
+      else { ctx.moveTo(x, y); ctx.lineTo(x - s, y - s * 1.5); ctx.lineTo(x + s, y - s * 1.5); }
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#d8e0e8'; ctx.font = '10px system-ui'; ctx.textAlign = 'center'; ctx.fillText((f.side > 0 ? 'B' : 'S') + fQ(f.qty), x, f.side > 0 ? y + s * 1.5 + 8 : y - s * 1.5 - 8);
+    }
+  }
+}
+function drawPosLines(v){
+  if (!TR || !MKA) return;
+  const PW = pw(), p = posOf(SYM), stock = TR.mode === 'stock';
+  const hl = (price, col, dash, txt) => { if (price == null) return; const y = Math.round(yOf(price)) + .5; if (y > ph()) return; ctx.strokeStyle = col; ctx.lineWidth = 1.3; ctx.setLineDash(dash); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(PW, y); ctx.stroke(); ctx.setLineDash([]); ctx.font = '11px system-ui'; const w = ctx.measureText(txt).width + 10; ctx.fillStyle = col; ctx.fillRect(PW - w - 8, y - 9, w, 18); ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText(txt, PW - w - 3, y); axisTag(price, col); };
+  const px = curPrice();
+  if (p.qty){
+    const u = (px - p.avg) * p.qty * OZ * p.side;
+    hl(p.avg, '#3d7fd6', [], `${stock ? SY.name : p.side > 0 ? 'LONG' : 'SHORT'} ${fQ(p.qty)} @ ${fP(p.avg)}  ${fU(u)}`);
+  }
+  const ref = p.qty ? p.avg : px;
+  if (p.sl != null){ const d = p.qty ? (p.sl - p.avg) * p.qty * OZ * p.side : null; hl(p.sl, '#c94442', [6, 4], 'SL ' + fP(p.sl) + (d != null ? '  ' + fU(d) : '  (' + fPc((p.sl / ref - 1) * 100) + ')')); }
+  if (p.tp != null){ const d = p.qty ? (p.tp - p.avg) * p.qty * OZ * p.side : null; hl(p.tp, '#1f8f6a', [6, 4], 'TP ' + fP(p.tp) + (d != null ? '  ' + fU(d) : '')); }
+}
+
+/* ---------- hình vẽ ---------- */
+const TOOLS = [['cursor', '↖'], ['trend', '╱'], ['ray', '↗'], ['chan', '⫽'], ['hline', '—'], ['vline', '│'], ['rect', '▭'], ['fib', 'Fib'], ['measure', '📏']];   // chú thích: t('tool_' + k)
+const COLORS = ['#e0a43a', '#4c9be8', '#ef5350', '#26a69a', '#c678dd', '#d8e0e8'];
+const FIBS = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1, 1.618];
+let pending = null;  // hình đang vẽ (chờ điểm 2)
+function ptXY(pt){ return [xOf(timeToIdx(pt.t)), yOf(pt.p)]; }
+function chanOff(d, x0, y0, x1, y1){ const [xc, yc] = ptXY(d.p[2] || d.p[1]); return x1 !== x0 ? yc - (y0 + (y1 - y0) * (xc - x0) / (x1 - x0)) : yc - y0; }
+function drawDrawings(v){
+  const PW = pw(), PH = ph();
+  const list = draws().concat(pending ? [pending] : []);
+  for (const d of list){
+    const sel = d.id === S.sel; ctx.strokeStyle = d.c; ctx.fillStyle = d.c; ctx.lineWidth = sel ? 2 : 1.4; ctx.setLineDash([]);
+    const [x0, y0] = ptXY(d.p[0]), [x1, y1] = d.p[1] ? ptXY(d.p[1]) : [x0, y0];
+    ctx.font = '11px ui-monospace,Consolas,monospace';
+    if (d.type === 'trend'){ ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); }
+    else if (d.type === 'ray'){ let ex = x1, ey = y1; if (x1 !== x0){ const k = (y1 - y0) / (x1 - x0), dir = x1 > x0 ? 1 : -1; ex = dir > 0 ? PW : 0; ey = y0 + k * (ex - x0); } ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(ex, ey); ctx.stroke(); }
+    else if (d.type === 'chan'){
+      const off = chanOff(d, x0, y0, x1, y1);
+      ctx.globalAlpha = .08; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.lineTo(x1, y1 + off); ctx.lineTo(x0, y0 + off); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.moveTo(x0, y0 + off); ctx.lineTo(x1, y1 + off); ctx.stroke();
+      ctx.globalAlpha = .55; ctx.lineWidth = 1; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(x0, y0 + off / 2); ctx.lineTo(x1, y1 + off / 2); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+    else if (d.type === 'hline'){ ctx.beginPath(); ctx.moveTo(0, y0); ctx.lineTo(PW, y0); ctx.stroke(); ctx.textAlign = 'left'; ctx.fillText(fP(d.p[0].p), 4, y0 - 7); }
+    else if (d.type === 'vline'){ ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(x0, PH); ctx.stroke(); }
+    else if (d.type === 'rect'){ ctx.globalAlpha = .12; ctx.fillRect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0)); ctx.globalAlpha = 1; ctx.strokeRect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0)); }
+    else if (d.type === 'fib'){
+      const a = d.p[0].p, b = (d.p[1] || d.p[0]).p, xa = Math.min(x0, x1), xb = Math.max(x0, x1, xa + 40);
+      ctx.textAlign = 'left';
+      for (const f of FIBS){ const p = b + (a - b) * f, y = yOf(p); ctx.globalAlpha = f === 0.5 || f === 0.618 ? 1 : .65; ctx.beginPath(); ctx.moveTo(xa, y); ctx.lineTo(xb, y); ctx.stroke(); ctx.fillText(f + ' (' + fP(p) + ')', xb + 4, y); }
+      ctx.globalAlpha = .5; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+    else if (d.type === 'measure'){
+      const a = d.p[0], b = d.p[1] || d.p[0], up = b.p >= a.p;
+      ctx.fillStyle = up ? 'rgba(38,166,154,.18)' : 'rgba(239,83,80,.18)'; ctx.fillRect(Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0));
+      const nb = Math.round(timeToIdx(b.t) - timeToIdx(a.t)), hrs = (b.t - a.t) / 3600;
+      const txt = `${b.p - a.p >= 0 ? '+' : '−'}${fx(Math.abs(b.p - a.p), SY.dp, true)} (${fPc((b.p / a.p - 1) * 100)})  ${nb} ${t('bars_u')}  ${Math.abs(hrs) >= 48 ? fx(hrs / 24, 1) + ' ' + t('days_u') : fx(hrs, 1) + ' ' + t('hours_u')}  = ${fU((b.p - a.p) * OZ, SY.cur)}/${qUnit()}`;
+      const w = ctx.measureText(txt).width + 10, tx = (x0 + x1) / 2 - w / 2, ty = up ? Math.min(y0, y1) - 22 : Math.max(y0, y1) + 4;
+      ctx.fillStyle = up ? '#1f8f6a' : '#c94442'; ctx.fillRect(tx, ty, w, 18); ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText(txt, tx + 5, ty + 9);
+    }
+    if (sel){ ctx.fillStyle = '#fff'; for (const pt of d.p){ const [x, y] = ptXY(pt); ctx.fillRect(x - 3.5, y - 3.5, 7, 7); } }
+  }
+}
+function segDist(px, py, x0, y0, x1, y1){ const dx = x1 - x0, dy = y1 - y0, L = dx * dx + dy * dy; let t = L ? ((px - x0) * dx + (py - y0) * dy) / L : 0; t = Math.max(0, Math.min(1, t)); return Math.hypot(px - x0 - t * dx, py - y0 - t * dy); }
+function hitDraw(x, y){
+  const PW = pw(), list = draws();
+  for (let k = list.length - 1; k >= 0; k--){
+    const d = list[k];
+    for (let j = 0; j < d.p.length; j++){ const [px, py] = ptXY(d.p[j]); if (Math.hypot(x - px, y - py) < 7) return {d, part: j}; }
+    const [x0, y0] = ptXY(d.p[0]), [x1, y1] = d.p[1] ? ptXY(d.p[1]) : [x0, y0];
+    let hit = false;
+    if (d.type === 'trend') hit = segDist(x, y, x0, y0, x1, y1) < 6;
+    else if (d.type === 'chan'){ const off = chanOff(d, x0, y0, x1, y1); hit = segDist(x, y, x0, y0, x1, y1) < 6 || segDist(x, y, x0, y0 + off, x1, y1 + off) < 6; }
+    else if (d.type === 'ray'){ let ex = x1, ey = y1; if (x1 !== x0){ ex = x1 > x0 ? PW : 0; ey = y0 + (y1 - y0) / (x1 - x0) * (ex - x0); } hit = segDist(x, y, x0, y0, ex, ey) < 6; }
+    else if (d.type === 'hline') hit = Math.abs(y - y0) < 6;
+    else if (d.type === 'vline') hit = Math.abs(x - x0) < 6;
+    else if (d.type === 'rect' || d.type === 'measure') hit = x > Math.min(x0, x1) - 4 && x < Math.max(x0, x1) + 4 && y > Math.min(y0, y1) - 4 && y < Math.max(y0, y1) + 4;
+    else if (d.type === 'fib'){ const xa = Math.min(x0, x1), xb = Math.max(x0, x1, xa + 40); if (x > xa - 4 && x < xb + 4) for (const f of FIBS){ if (Math.abs(y - yOf(d.p[1].p + (d.p[0].p - d.p[1].p) * f)) < 5) hit = true; } }
+    if (hit) return {d, part: 'body'};
+  }
+  return null;
+}
+function snapPt(x, y){
+  const v = view(); let i = Math.round(iOf(x)), p = pOf(y);
+  if (S.magnet && i >= 0 && i < v.n){ let best = 14; for (const q of [bo(v, i), bh(v, i), bl(v, i), bc(v, i)]){ const d = Math.abs(yOf(q) - y); if (d < best){ best = d; p = q; } } }
+  return {t: idxToTime(i), p: +p.toFixed(4)};
+}
+
+/* ---------- chuột / cảm ứng ---------- */
+let drag = null; const ptrs = new Map(); let pinch = null;
+function mpos(e){ const r = cv.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; }
+function hitPosLine(y){ if (!TR || !MKA) return null; const p = posOf(SYM); for (const k of ['sl', 'tp']) if (p[k] != null && Math.abs(yOf(p[k]) - y) < 6) return k; return null; }
+cv.addEventListener('pointerdown', e => {
+  const m = mpos(e); ptrs.set(e.pointerId, m); cv.setPointerCapture(e.pointerId);
+  if (ptrs.size === 2){ const [a, b] = [...ptrs.values()]; pinch = {d: Math.hypot(a.x - b.x, a.y - b.y), bw: S.barW, mx: (a.x + b.x) / 2}; pinch.ia = iOf(pinch.mx); drag = null; return; }
+  const BY = H - TAXH, inSub = m.y > ph() && m.y <= BY;
+  if (pending){ if (m.y > ph()) return; pending.p[pending.p.length - 1] = snapPt(m.x, m.y); finishPending(); return; }
+  if (m.x > pw()){ if (m.y > ph()) return; drag = {mode: 'ps', y0: m.y, min: PR.min, max: PR.max}; S.auto = false; return; }
+  if (m.y > BY){ drag = {mode: 'ts', x0: m.x, bw: S.barW}; return; }
+  if (inSub){ drag = {mode: 'pan', x0: m.x, y0: m.y, r0: S.rightIdx, min: PR.min, max: PR.max}; cv.style.cursor = 'grabbing'; return; }
+  if (S.tool !== 'cursor'){
+    const pt = snapPt(m.x, m.y), single = S.tool === 'hline' || S.tool === 'vline';
+    const d = {id: Date.now() + Math.random(), type: S.tool, c: S.color, p: single ? [pt] : [pt, Object.assign({}, pt)]};
+    if (single){ draws().push(d); S.sel = d.id; saveDraws(); setTool('cursor'); req(); return; }
+    pending = d; drag = {mode: 'draw', x0: m.x, y0: m.y}; req(); return;
+  }
+  const ln = hitPosLine(m.y); if (ln){ drag = {mode: 'line', k: ln}; return; }
+  const h = hitDraw(m.x, m.y);
+  if (h){ S.sel = h.d.id; drag = {mode: 'move', h, x0: m.x, y0: m.y, orig: h.d.p.map(q => ({t: q.t, p: q.p, i: timeToIdx(q.t)}))}; req(); return; }
+  S.sel = null; drag = {mode: 'pan', x0: m.x, y0: m.y, r0: S.rightIdx, min: PR.min, max: PR.max}; cv.style.cursor = 'grabbing'; req();
+});
+cv.addEventListener('pointermove', e => {
+  const m = mpos(e); if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, m);
+  if (pinch && ptrs.size === 2){ const [a, b] = [...ptrs.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); S.barW = Math.max(1, Math.min(60, pinch.bw * d / pinch.d)); S.rightIdx = pinch.ia + (pw() - pinch.mx) / S.barW; req(); return; }
+  S.mouse = m;
+  if (pending && !drag){ pending.p[pending.p.length - 1] = snapPt(m.x, Math.min(m.y, ph())); req(); return; }
+  if (!drag){ cv.style.cursor = m.x > pw() ? (m.y > ph() ? 'default' : 'ns-resize') : m.y > H - TAXH ? 'ew-resize' : m.y > ph() ? 'crosshair' : hitPosLine(m.y) ? 'ns-resize' : (S.tool === 'cursor' && hitDraw(m.x, m.y)) ? 'move' : 'crosshair'; req(); return; }
+  const PH = ph();
+  if (drag.mode === 'pan'){ S.rightIdx = drag.r0 + (drag.x0 - m.x) / S.barW; if (!S.auto){ const dp = (m.y - drag.y0) / PH * (drag.max - drag.min); S.pMin = drag.min + dp; S.pMax = drag.max + dp; } }
+  else if (drag.mode === 'ps'){ const f = Math.exp((m.y - drag.y0) * 0.006), mid = (drag.min + drag.max) / 2, half = (drag.max - drag.min) / 2 * f; S.pMin = mid - half; S.pMax = mid + half; }
+  else if (drag.mode === 'ts'){ S.barW = Math.max(1, Math.min(60, drag.bw * Math.exp((m.x - drag.x0) * 0.008))); }
+  else if (drag.mode === 'draw'){ pending.p[1] = snapPt(m.x, m.y); }
+  else if (drag.mode === 'line'){ if (TR){ posOf(SYM)[drag.k] = +pOf(m.y).toFixed(SY.dp); syncOrderInputs(); updPanel(); } }
+  else if (drag.mode === 'move'){
+    const di = (m.x - drag.x0) / S.barW, dp = -(m.y - drag.y0) / PH * (PR.max - PR.min), d = drag.h.d;
+    if (drag.h.part === 'body') d.p.forEach((q, j) => { q.t = idxToTime(Math.round(drag.orig[j].i + di)); q.p = +(drag.orig[j].p + dp).toFixed(4); if (d.type === 'hline') q.t = drag.orig[j].t; });
+    else { const s = snapPt(m.x, m.y); d.p[drag.h.part] = s; }
+  }
+  req();
+});
+function endPtr(e){
+  ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null;
+  if (!drag) return;
+  if (drag.mode === 'draw'){ const m = mpos(e); if (Math.hypot(m.x - drag.x0, m.y - drag.y0) > 5) finishPending(); }
+  else if (drag.mode === 'move') saveDraws();
+  else if (drag.mode === 'line'){ saveTR(); }
+  else if (drag.mode === 'ts' || drag.mode === 'pan') saveUI();
+  drag = null; cv.style.cursor = 'crosshair'; req();
+}
+cv.addEventListener('pointerup', endPtr); cv.addEventListener('pointercancel', endPtr);
+cv.addEventListener('pointerleave', () => { if (!drag){ S.mouse = null; req(); } });
+cv.addEventListener('dblclick', e => { const m = mpos(e); if (m.x > pw()){ S.auto = true; req(); } });
+cv.addEventListener('wheel', e => {
+  e.preventDefault(); const m = mpos(e);
+  if (m.x > pw()){ const f = Math.exp(e.deltaY * 0.0015), mid = (PR.min + PR.max) / 2, half = (PR.max - PR.min) / 2 * f; S.auto = false; S.pMin = mid - half; S.pMax = mid + half; req(); return; }
+  const ia = iOf(Math.min(m.x, pw())), f = Math.exp(-e.deltaY * 0.0015);
+  S.barW = Math.max(1, Math.min(60, S.barW * f)); S.rightIdx = ia + (pw() - Math.min(m.x, pw())) / S.barW; req(); saveUI();
+}, {passive: false});
+function finishPending(){ if (!pending) return;
+  if (pending.type === 'chan' && pending.p.length === 2){ pending.p.push(Object.assign({}, pending.p[1])); toast(t('chan_3rd'), 2500); req(); return; }
+  draws().push(pending); S.sel = pending.id; pending = null; saveDraws(); setTool('cursor'); req(); }
+
+document.addEventListener('keydown', e => {
+  const tg = e.target && e.target.tagName || '', typing = tg === 'INPUT' || tg === 'SELECT' || tg === 'TEXTAREA', modal = $('modal').style.display === 'flex';
+  if (e.key === 'Escape'){                                   // Esc: đóng hộp thoại / menu kể cả khi con trỏ đang ở ô nhập
+    if (modal){ closeModal(); return; }
+    if (typing){ closeMenus(); return; }
+    pending = null; setTool('cursor'); closeMenus(); req(); return; }
+  if (typing || modal) return;                               // đang gõ hoặc đang mở hộp thoại: để trình duyệt xử lý phím
+  if (e.key === 'Delete' || e.key === 'Backspace'){ delSel(); }
+  else if (TR && e.key === 'ArrowRight'){ e.preventDefault(); stepBars(e.shiftKey ? 5 : 1); }
+  else if (TR && e.key === ' '){
+    if (tg === 'BUTTON' || tg === 'SUMMARY' || tg === 'A') return;   // Space trên nút/summary đang focus = bấm nút đó
+    e.preventDefault(); stepBars(e.shiftKey ? 5 : 1); }
+});
+function delSel(){ if (S.sel == null) return; const L = draws(), k = L.findIndex(d => d.id === S.sel); if (k >= 0) L.splice(k, 1); S.sel = null; saveDraws(); req(); }
+
+/* ---------- thanh công cụ ---------- */
+function setTool(k){ S.tool = k; pending = null; document.querySelectorAll('#tools .b').forEach(b => b.classList.toggle('on', b.dataset.t === k)); updDrawBtn(); }
+/* nút "✏ Vẽ ▾": hiện biểu tượng công cụ đang chọn; sáng khi đang vẽ hoặc menu đang mở */
+function updDrawBtn(){
+  const tl = TOOLS.find(x => x[0] === S.tool), b = $('bDraw');
+  b.textContent = (S.tool !== 'cursor' && tl ? tl[1] : '✏') + ' ' + t('draw_btn') + ' ▾';
+  b.classList.toggle('on', S.tool !== 'cursor' || $('drawMenu').style.display === 'block');
+}
+function buildToolbar(){
+  const tfs = $('tfs'); tfs.innerHTML = '';
+  for (const tf of TFL){
+    if (tf.small && !(DS && DS['5']) && !SY.f5) continue;
+    const b = document.createElement('button'); b.className = 'b' + (tf.k === S.tf ? ' on' : ''); b.textContent = tfLab(tf.k); b.onclick = () => setTF(tf.k); tfs.appendChild(b);
+  }
+  const tl = $('tools'); tl.innerHTML = '';
+  for (const [k, ic] of TOOLS){ const b = document.createElement('button'), i = document.createElement('span'); b.className = 'b'; b.dataset.t = k; i.textContent = ic; b.append(i, document.createTextNode(t('tn_' + k))); b.title = t('tool_' + k);
+    b.onclick = () => { setTool(S.tool === k ? 'cursor' : k); closeMenus(); }; tl.appendChild(b); }
+  const cl = $('colors'); cl.innerHTML = '';
+  for (const c of COLORS){ const b = document.createElement('button'); b.className = 'sw' + (c === S.color ? ' on' : ''); b.style.background = c; b.title = t('draw_color'); b.onclick = () => { S.color = c; const d = draws().find(x => x.id === S.sel); if (d){ d.c = c; saveDraws(); } buildToolbar(); setTool(S.tool); req(); saveUI(); }; cl.appendChild(b); }
+  const nOn = INDS.filter(x => S.inds[x.k]).length + subList().length;
+  $('bInd').textContent = t('ind_btn') + (nOn ? ' (' + nOn + ')' : '') + ' ▾'; $('bInd').classList.toggle('on', $('indMenu').style.display === 'block');
+  $('bMag').classList.toggle('on', S.magnet);
+  document.querySelectorAll('#modeSw [data-m]').forEach(b => b.classList.toggle('on', b.dataset.m === MODE));
+  document.querySelectorAll('#langSw [data-l]').forEach(b => b.classList.toggle('on', b.dataset.l === LANG));
+  updDrawBtn();
+}
+function buildIndMenu(){
+  const M = $('indMenu'); M.innerHTML = '';
+  const sec = (title, list, st) => { const h = document.createElement('h4'); h.textContent = title; M.appendChild(h);
+    for (const it of list){ const lb = document.createElement('label'), cb = document.createElement('input'), sw = document.createElement('i'); cb.type = 'checkbox'; cb.checked = !!st[it.k]; sw.style.background = it.col || it.cols[0];
+      cb.onchange = () => { st[it.k] = cb.checked; saveUI(); buildToolbar(); setTool(S.tool); req(); }; lb.append(cb, sw, document.createTextNode(it.lk ? t(it.lk) : it.lab)); M.appendChild(lb); } };
+  sec(t('ind_on_price'), INDS, S.inds); sec(t('ind_sub'), subsAvail(), S.subs);
+  if (!HASVOL){ const n = document.createElement('div'); n.className = 'muted'; n.style.padding = '4px 8px'; n.textContent = t('ind_novol'); M.appendChild(n); }
+  if (S.inds.zz || S.inds.ew){ const n = document.createElement('div'); n.className = 'muted'; n.style.cssText = 'padding:4px 8px;max-width:260px;white-space:normal'; n.textContent = t('ew_note'); M.appendChild(n); }
+}
+/* menu thả trên thanh trên: Chỉ báo, Vẽ */
+const MENUS = [['indMenu', 'bInd'], ['drawMenu', 'bDraw']];
+function closeMenus(){ for (const [m, b] of MENUS){ $(m).style.display = 'none'; $(b).classList.remove('on'); } updDrawBtn(); }
+function toggleMenu(mid, bid){
+  const M = $(mid), open = M.style.display !== 'block';
+  closeMenus(); if (!open) return;
+  if (mid === 'indMenu') buildIndMenu();
+  M.style.display = 'block';
+  const r = $(bid).getBoundingClientRect();
+  M.style.left = Math.max(4, Math.min(r.left, innerWidth - (M.offsetWidth || 270) - 4)) + 'px'; M.style.top = (r.bottom + 4) + 'px';
+  $(bid).classList.add('on');
+}
+$('bInd').onclick = () => toggleMenu('indMenu', 'bInd');
+$('bDraw').onclick = () => toggleMenu('drawMenu', 'bDraw');
+document.addEventListener('pointerdown', e => { for (const [m, b] of MENUS){ const M = $(m); if (M.style.display === 'block' && !M.contains(e.target) && !$(b).contains(e.target)){ closeMenus(); break; } } });
+$('top').addEventListener('scroll', closeMenus);
+async function setTF(k){
+  if (!MKA) return;
+  if (tfSmall(k)){ try { await load5m(MKA); } catch(e){ return; } }
+  if (!DS[k]) return;
+  if (TR && closedCount(DS[k], TR.T) < 30){ toast(t('no_tf_here', tfLab(k)), 3500); return; }
+  const v0 = view(), wasTR = !!TR, marginPx = (S.rightIdx - (v0.n - 1)) * S.barW, Tr = v0.ds ? idxToTime(S.rightIdx) : 0;
+  S.tf = k; invalidate();
+  const v = view();
+  if (wasTR){ S.rightIdx = v.n - 1 + Math.max(2, marginPx) / S.barW; if (TR.tf !== k){ TR.tf = k; saveTR(); } }
+  else if (v0.ds) S.rightIdx = timeToIdx(Tr);
+  if (TR && tfSmall(k) && TR.T > DS['5'].t[DS['5'].n - 1] + 300) toast(t('no5_after', fDate(DS['5'].t[DS['5'].n - 1])), 3500);
+  buildToolbar(); setTool(S.tool); saveUI(); updPanel(); renderBasket(); req();
+}
+$('bMag').onclick = () => { S.magnet = !S.magnet; buildToolbar(); setTool(S.tool); saveUI(); };
+$('bDel').onclick = delSel;
+$('bClr').onclick = () => { if (!draws().length || !confirm(t('confirm_clr'))) return; draws().length = 0; S.sel = null; saveDraws(); req(); };
+$('bEnd').onclick = () => { const v = view(); S.rightIdx = v.n - 1 + 8; S.auto = true; req(); };
+$('bAuto').onclick = () => { S.auto = true; req(); };
+$('bGo').onclick = () => { if (TR){ toast(t('busy_go')); return; } const s = $('goDate').value; if (!s) return; const [y, mo, d] = s.split('-').map(Number); S.rightIdx = timeToIdx(localToT(y, mo, d, 12, 0)) + pw() / S.barW / 2; S.auto = true; req(); };
+
+/* ---------- chế độ, mã đang xem, ngôn ngữ ---------- */
+function buildSymSel(){
+  const sel = $('symSel'), grp = {}; sel.innerHTML = '';
+  for (const k in SYMS){ const sy = SYMS[k]; if (sy.cls !== MODE) continue;
+    if (!grp[sy.g]){ grp[sy.g] = document.createElement('optgroup'); grp[sy.g].label = t(sy.g); sel.appendChild(grp[sy.g]); }
+    const o = document.createElement('option'); o.value = k; o.textContent = sy.name; o.title = sy.lab[LANG]; if (sy.missing && k !== SYM) o.disabled = true; grp[sy.g].appendChild(o); }
+  sel.value = SYM;
+}
+let actSeq = 0;
+/* đổi mã đang xem — KHÔNG nạp lại trang. Ném lỗi nếu không nạp được dữ liệu. */
+async function setActive(key){
+  const sy = SYMS[key]; if (!sy) throw new Error(key);
+  const seq = ++actSeq;
+  const mk = await loadMarket(key);
+  if (seq !== actSeq) return;
+  if (tfSmall(S.tf) && !mk.DS['5']){ try { await load5m(mk); } catch(e){ S.tf = '60'; } if (seq !== actSeq) return; }
+  bind(key); MODE = sy.cls;
+  if (!DS[S.tf]) S.tf = DS['60'] ? '60' : 'D';
+  if (TR && closedCount(DS[S.tf], TR.T) < 30 && S.tf !== 'D'){ const big = ['60', '240', 'D'].find(k => DS[k] && closedCount(DS[k], TR.T) >= 30); S.tf = big || 'D'; }
+  if (TR){ TR.active = key; TR.tf = S.tf; saveTR(); $('qty').value = defaultQty(); }
+  else { LS.set('sg_sym_' + MODE, key); LS.set('sg_mode', MODE); }
+  S.sel = null; pending = null; S.auto = true; invalidate();
+  S.rightIdx = view().n - 1 + 12;
+  document.title = sy.name + ' · StockGym';
+  try { history.replaceState(null, '', location.pathname + '?s=' + key); } catch(e){}
+  refreshUI();
+}
+function defaultSyms(m){
+  const vi = LANG === 'vi';
+  if (m === 'deriv') return vi ? ['vn30', 'es', 'xag'] : ['es', 'xag', 'vn30'];
+  return vi ? BASKET.vn.concat(BASKET.us) : BASKET.us.concat(BASKET.vn);
+}
+async function activateFirst(keys){
+  for (const k of keys){ if (!k || !SYMS[k] || SYMS[k].cls !== MODE) continue; try { await setActive(k); if (SYM === k) return true; } catch(e){} }
+  return false;
+}
+async function setMode(m){
+  if (m === MODE) return;
+  if (TR){ toast(t('sess_busy')); return; }
+  const prev = MODE; MODE = m;
+  if (!(await activateFirst([LS.get('sg_sym_' + m, null)].concat(defaultSyms(m))))){ MODE = prev; refreshUI(); }
+}
+async function pickSym(key){
+  if (TR){
+    if (TR.mode !== 'stock'){ toast(t('sess_busy')); $('symSel').value = SYM; return; }
+    if (!TR.syms.includes(key) && !(await addToBasket(key))){ $('symSel').value = SYM; return; }
+    try { await setActive(key); } catch(e){ $('symSel').value = SYM; }
+    return;
+  }
+  try { await setActive(key); } catch(e){ buildSymSel(); return; }
+  if (MODE === 'stock' && SYM === key){ const b = BASKET[SY.mkt]; if (!b.includes(key)){ b.push(key); LS.set('sg_basket', BASKET); } renderBasket(); }
+}
+$('symSel').onchange = () => pickSym($('symSel').value);
+document.querySelectorAll('#modeSw [data-m]').forEach(b => b.onclick = () => setMode(b.dataset.m));
+document.querySelectorAll('#langSw [data-l]').forEach(b => b.onclick = () => setLang(b.dataset.l));
+/* đổi ngôn ngữ không nạp lại trang: dựng lại mọi phần sinh bằng JS */
+function setLang(l){
+  if (l !== 'vi' && l !== 'en') return;
+  LANG = l; LS.set('sg_lang', l); document.documentElement.lang = l;
+  const yr = [$('ry0').value, $('ry1').value];
+  $('ry0').dataset.r = '';
+  refreshUI();
+  ['ry0', 'ry1'].forEach((id, i) => { const e = $(id); if (yr[i] && [...e.options].some(o => o.value === yr[i])) e.value = yr[i]; });
+  if ($('indMenu').style.display === 'block') buildIndMenu();
+}
+function buildYears(){
+  if (!DS || !DS['D']) return;
+  const d = DS['D'], y0 = yearOf(d.t[0]), y1 = yearOf(d.t[d.n - 1]), r = SYM + ':' + y0 + '-' + y1;
+  if ($('ry0').dataset.r === r) return;
+  for (const id of ['ry0', 'ry1']){ const e = $(id); e.innerHTML = ''; for (let y = y0; y <= y1; y++){ const o = document.createElement('option'); o.value = o.textContent = y; e.appendChild(o); } }
+  $('ry0').value = y0; $('ry1').value = y1; $('ry0').dataset.r = r;
+}
+function dataNote(){
+  const M = MKA && MKA.meta, n = $('dataNote'), s = $('smallNote'), fd = x => x ? fDate(x) : '–';
+  n.textContent = s.textContent = '';
+  if (!M) return;
+  if (SY.kind === 'xag'){ s.textContent = t('small_xag'); n.textContent = t('note_xag', fd(M.join_t), fx(+M.basis_k, 4), fFull(M.built)); }
+  else if (SY.kind === 'vn30') n.textContent = t('note_vn30', fInt(OZ), fFull(M.built));
+  else { s.textContent = t('small_yh', fd(M.m0), fd(M.h0)); n.textContent = t('note_yh', SY.lab[LANG], M.y || SY.name, fd(M.d0), fd(M.h0), fd(M.m0), fFull(M.built)); }
+}
+function orderUI(){
+  const stock = MODE === 'stock', q = $('qty');
+  q.step = q.min = SY.lot;
+  $('multLab').textContent = t('mult_lab', qUnit(), fM(SY.mult, SY.mult < 1 ? 2 : 0, SY.cur));
+  for (const id of ['slIn', 'tpIn']) $(id).step = (10 ** -SY.dp).toFixed(SY.dp);
+  $('bLong').textContent = t(stock ? 'b_buy' : 'b_long'); $('bShort').textContent = t(stock ? 'b_sell' : 'b_short');
+  $('mLong').textContent = t(stock ? 'b_buy' : 'm_long'); $('mShort').textContent = t(stock ? 'b_sell' : 'm_short');
+  $('pctRow').style.display = stock ? '' : 'none';
+  $('ordHint').textContent = t(stock ? 'ord_hint_s' : 'ord_hint_d');
+  document.querySelectorAll('#pctRow [data-pct]').forEach(b => { b.title = t('pct_tt', b.dataset.pct); });
+  $('capIn').value = CAP[SY.cur]; $('capIn').step = SY.cur === 'đ' ? 1000000 : 100; $('capCur').textContent = curSym(SY.cur);
+}
+$('capIn').onchange = () => { const v = +$('capIn').value; if (v > 0){ CAP[SY.cur] = v; LS.set('sg_cap', CAP); updStart(); } else $('capIn').value = CAP[SY.cur]; };
+/* dựng lại mọi phần phụ thuộc mã đang xem / chế độ / ngôn ngữ */
+function refreshUI(){
+  if (!SY) return;
+  applyI18n(); buildSymSel(); buildToolbar(); setTool(S.tool); buildYears(); orderUI(); cfgUI(); dataNote();
+  showMode(); syncOrderInputs(); renderBasket(); updPanel(); renderJournal(); req();
+}
+
+/* ---------- tài khoản ---------- */
+function equity(){
+  let e = TR.cash; const stock = TR.mode === 'stock';
+  for (const k of openKeys()){ const p = TR.pos[k], sy = SYMS[k]; let px = curPrice(k); if (!isFinite(px)) px = p.avg;
+    e += stock ? p.qty * px * sy.mult : (px - p.avg) * p.qty * sy.mult * p.side; }
+  return e;
+}
+function marginUsed(){
+  let m = 0;
+  for (const k of openKeys()){ const p = TR.pos[k], sy = SYMS[k]; let px = curPrice(k); if (!isFinite(px)) px = p.avg; m += p.qty * px * sy.mult * (sy.mr || 1); }
+  return m;
+}
+/* cổ phiếu: KL mua tối đa với tiền mặt hiện có (đã gồm phí), làm tròn xuống theo lô */
+function maxBuy(key, px){
+  const sy = SYMS[key], c = cfgOf(key), per = px * sy.mult * (1 + c.slip / 100) + c.comm;
+  if (!(per > 0) || !isFinite(per)) return 0;
+  return Math.max(0, rq(Math.floor(TR.cash / per / sy.lot + 1e-9) * sy.lot));
+}
+function normQty(x, lot){ return x == null || !(x > 0) ? 0 : rq(Math.floor(x / lot + 1e-6) * lot); }
+function defaultQty(){
+  const lot = SY.lot; if (!TR || TR.mode !== 'stock') return lot;
+  const px = curPrice(); if (!isFinite(px)) return lot;
+  return Math.max(lot, rq(Math.floor(0.2 * TR.cash0 / (px * SY.mult) / lot) * lot));
+}
+/* ghi 1 điểm đường vốn tại TR.T, cập nhật đỉnh và sụt giảm lớn nhất */
+function markEquity(){
+  const e = equity(), q = TR.eq, last = q[q.length - 1], val = +e.toFixed(2);
+  if (last && last[0] === TR.T) last[1] = val; else q.push([TR.T, val]);
+  if (q.length > 2000) TR.eq = q.filter((x, i) => i % 2 === 0 || i === q.length - 1);
+  if (e > TR.peak) TR.peak = e;
+  const dd = TR.peak > 0 ? (TR.peak - e) / TR.peak : 0; if (dd > TR.maxDD) TR.maxDD = dd;
+  return e;
+}
+
+/* ---------- phiên luyện tập ---------- */
+function newTR(T, syms, cap){
+  const s = {v: 2, id: Date.now(), mode: MODE, cur: SY.cur, syms: syms.slice(), syms0: syms.slice(), active: SYM, tf: S.tf, blind: $('blind').checked, T, startT: T,
+    cash0: cap, cash: cap, pos: {}, trades: [], eq: [[T, cap]], peak: cap, maxDD: 0, draws: {}, bh0: {}, bars: 0, barsIn: 0};
+  for (const k of s.syms) s.bh0[k] = priceAt(MK[k], T);
+  return s;
+}
+function startAt(T, syms){
+  stopAuto(); closeModal(); if ($('side')) $('side').scrollTop = 0;
+  TR = newTR(T, syms, CAP[SY.cur]); LAST = null; S.auto = true; S.sel = null; pending = null; invalidate();
+  S.barW = Math.max(S.barW, 5); S.rightIdx = view().n - 1 + 12;
+  $('qty').value = defaultQty();
+  saveTR(); refreshUI();
+}
+async function ensureTF(){ if (!MKA) return false; if (tfSmall(S.tf) && !DS['5']){ try { await load5m(MKA); } catch(e){ return false; } } return !!DS[S.tf]; }
+/* các mã của phiên: phái sinh = 1 mã; cổ phiếu = rổ cùng thị trường (mã không nạp được bị bỏ qua) */
+async function prepSyms(){
+  if (MODE !== 'stock') return [SYM];
+  const b = BASKET[SY.mkt].slice(); if (!b.includes(SYM)) b.unshift(SYM);
+  const ok = {};
+  await Promise.all(b.map(k => loadMarket(k).then(() => { ok[k] = 1; }, () => {})));
+  return b.filter(k => ok[k]);
+}
+function pickRandomT(syms){
+  const ds = DS[S.tf], hist = ds.dur >= 7 * 86400 ? 60 : ds.dur >= 86400 ? 150 : 300;
+  const y0 = +$('ry0').value, y1 = +$('ry1').value;
+  const a = localToT(Math.min(y0, y1), 1, 1), b = localToT(Math.max(y0, y1) + 1, 1, 1);
+  let i0 = Math.max(hist, lowerBound(ds, a)), i1 = Math.min(ds.n - 40, lowerBound(ds, b) - 1);
+  if (syms.length > 1){   // mọi mã của rổ phải có ≥150 nến ngày trước mốc và còn ≥40 nến của khung đang xem sau mốc
+    let lo = -Infinity, hi = Infinity;
+    for (const k of syms){ const d = MK[k].DS['D'], x = MK[k].DS[S.tf] || d; if (d.n < 151 || x.n < 41) return null; lo = Math.max(lo, d.t[149] + d.dur); hi = Math.min(hi, x.t[x.n - 40]); }
+    i0 = Math.max(i0, lowerBound(ds, lo)); i1 = Math.min(i1, lowerBound(ds, hi) - 1);
+  }
+  if (i1 <= i0) return null;
+  const j = i0 + Math.floor(Math.random() * (i1 - i0 + 1));
+  return ds.t[j] + ds.dur;
+}
+let starting = false;
+async function startRandom(){
+  if (starting || TR) return; starting = true;
+  try {
+    if (!(await ensureTF())) return;
+    const syms = await prepSyms(), T = pickRandomT(syms);
+    if (T == null){ toast(t('no_range'), 3000); return; }
+    startAt(T, syms);
+  } finally { starting = false; }
+}
+$('bRand').onclick = startRandom;
+$('bAt').onclick = async () => {
+  const s = $('tDate').value; if (!s){ toast(t('pick_dt')); return; }
+  if (starting || TR) return; starting = true;
+  try {
+    if (!(await ensureTF())) return;
+    const syms = await prepSyms();
+    const [dpart, hpart] = s.split('T'), [y, mo, d] = dpart.split('-').map(Number), [hh, mm] = (hpart || '00:00').split(':').map(Number);
+    const ds = DS[S.tf], k = closedCount(ds, localToT(y, mo, d, hh, mm));
+    if (k < 30){ toast(t('too_early')); return; } if (k >= ds.n){ toast(t('too_late')); return; }
+    const T = ds.t[k - 1] + ds.dur;
+    startAt(T, syms.filter(x => x === SYM || isFinite(priceAt(MK[x], T))));
+  } finally { starting = false; }
+};
+/* kết thúc phiên: đóng mọi vị thế ở giá hiện tại; reason = user | eod | bust */
+function endSession(reason, quiet){
+  if (!TR) return;
+  stopAuto();
+  for (const k of openKeys()){ const p = TR.pos[k]; let px = curPrice(k); if (!isFinite(px)) px = p.avg; fill(k, -p.side, p.qty, px, TR.T - 1, reason === 'bust' ? 'bust' : 'end'); }
+  const e = markEquity();
+  const sess = TR; sess.endT = sess.T; sess.reason = reason; sess.equity = +e.toFixed(2);
+  LAST = sess; TR = null; saveTR(); saveHist(sess); invalidate();
+  S.rightIdx = timeToIdx(sess.endT) + 40; S.auto = true;
+  refreshUI();
+  if (!quiet) showSessionEnd(sess);
+}
+$('bNew').onclick = () => { if (openKeys().length && !confirm(t('confirm_close_all'))) return; endSession('user', true); startRandom(); };
+$('bQuit').onclick = () => { if (openKeys().length && !confirm(t('confirm_close_all'))) return; endSession('user'); };
+$('bQuitTop').onclick = () => { if (TR) $('bQuit').onclick(); };
+function lastT(mk){ let x = 0; for (const k of ['5', '60', 'D']){ const d = mk.DS[k]; if (d) x = Math.max(x, d.t[d.n - 1] + d.dur); } return x; }
+function stepBars(n){
+  if (!TR) return;
+  for (let s = 0; s < n; s++){
+    const v = view();
+    if (!v.ds || v.nc >= v.ds.n){ stopAuto(); if (v.ds && (!tfSmall(S.tf) || TR.T >= lastT(MKA) - 1)){ endSession('eod'); return; } toast(t('no_more')); break; }
+    const ev = advanceTo(v.ds.t[v.nc] + v.ds.dur); invalidate();
+    if (!TR) return;                               // cháy tài khoản -> phiên đã kết thúc
+    if (ev){ stopAuto(); break; }
+  }
+  // giữ nến cuối trong khung nhìn
+  const v = view(), vis = pw() / S.barW;
+  if (S.rightIdx < v.n + 2) S.rightIdx = Math.max(S.rightIdx, v.n - 1 + Math.min(12, vis * 0.2));
+  saveTR(); updPanel(); renderBasket(); req();
+}
+/* tiến đồng hồ chung tới target: xử lý SL/TP cho MỌI mã đang có vị thế, mỗi mã trên nến cơ sở của chính nó */
+function advanceTo(target){
+  let ev = false; const T0 = TR.T, keys = openKeys();
+  for (const k of keys) if (MK[k] && advanceSym(k, T0, target)) ev = true;
+  TR.T = target; TR.bars = (TR.bars || 0) + 1; if (keys.length) TR.barsIn = (TR.barsIn || 0) + 1;
+  if (markEquity() <= 0){ endSession('bust'); return true; }
+  return ev;
+}
+function advanceSym(key, T0, target){
+  const mk = MK[key]; let T = T0, ev = false, guard = 0, force = null;
+  while (T < target && guard++ < 6){
+    const b = force || baseFor(mk, T); force = null; let i = closedCount(b, T);
+    while (i < b.n && b.t[i] + b.dur <= target){ if (processBar(key, b, i)) ev = true; i++; }
+    if (b === mk.DS['5'] && i >= b.n && b.t[b.n - 1] + b.dur < target){      // hết nến 5m (bạc: 5m dừng ở mốc nối) -> đi tiếp bằng 1H / ngày
+      T = Math.max(T, b.t[b.n - 1] + b.dur); force = mk.DS['60'] || mk.DS['D'];   // baseFor(T) tại đúng mốc cuối 5m vẫn trả 5m nên phải chỉ định
+      if (!force || force === b) break; continue; }
+    const e = i > 0 ? b.t[i - 1] + b.dur : T;                 // vừa đi qua mốc có nến mịn hơn -> chuyển cơ sở
+    if (e > T && e < target && baseFor(mk, e) !== b){ T = e; continue; }
+    break;
+  }
+  return ev;
+}
+/* 1 nến cơ sở: gap qua SL/TP khớp giá Open; chạm cả hai trong 1 nến thì tính SL trước */
+function processBar(key, b, i){
+  const p = TR.pos[key]; if (!p || !p.qty) return false;
+  const s = p.side, o = b.o[i], h = b.h[i], l = b.l[i], sl = p.sl, tp = p.tp, tr = p.trade, m = SYMS[key].mult;
+  let px = null, why = null;
+  if (sl != null && (s > 0 ? o <= sl : o >= sl)){ px = o; why = 'slgap'; }
+  else if (tp != null && (s > 0 ? o >= tp : o <= tp)){ px = o; why = 'tpgap'; }
+  else if (sl != null && (s > 0 ? l <= sl : h >= sl)){ px = sl; why = 'sl'; }
+  else if (tp != null && (s > 0 ? h >= tp : l <= tp)){ px = tp; why = 'tp'; }
+  let worst = s > 0 ? l : h, best = s > 0 ? h : l;
+  if (px != null){ worst = s > 0 ? Math.min(o, px) : Math.max(o, px); best = s > 0 ? Math.max(o, px) : Math.min(o, px); }
+  tr.mae = Math.min(tr.mae, tr.realized + (worst - p.avg) * p.qty * m * s);
+  tr.mfe = Math.max(tr.mfe, tr.realized + (best - p.avg) * p.qty * m * s);
+  if (px != null){ fill(key, -s, p.qty, px, b.t[i], why); return true; }
+  return false;
+}
+/* khớp 1 lệnh. Phái sinh: tiền mặt đổi theo lãi/lỗ đã chốt và phí. Cổ phiếu: mua trừ tiền, bán cộng tiền. */
+function fill(key, side, qty, px, tm, why){
+  const p = posOf(key), sy = SYMS[key], fee = feeSide(key, side, px, qty), stock = TR.mode === 'stock';
+  if (!p.qty){
+    p.trade = {id: Date.now() + Math.random(), sym: key, tf: S.tf, side, start: tm, fills: [], realized: 0, fees: 0, maxQty: 0, initQty: qty, entry: px, initSL: p.sl, mae: 0, mfe: 0, blind: TR.blind};
+    p.side = side; p.qty = qty; p.avg = px;
+  } else if (side === p.side){ p.avg = (p.avg * p.qty + px * qty) / (p.qty + qty); p.qty = rq(p.qty + qty); }
+  else { const g = (px - p.avg) * qty * sy.mult * p.side; p.trade.realized += g; p.qty = rq(p.qty - qty); if (!stock) TR.cash += g; }
+  if (stock) TR.cash -= side * px * qty * sy.mult;
+  TR.cash -= fee;
+  const tr = p.trade;
+  tr.maxQty = Math.max(tr.maxQty, p.qty); tr.fees += fee;
+  tr.fills.push({t: tm, side, qty, px, fee, why, pos: p.qty});
+  if (!p.qty){ finishTrade(key, tr, tm); return true; }
+  return false;
+}
+function finishTrade(key, tr, tm){
+  tr.end = tm; TR.trades.push(tr); TR.pos[key] = POS0();
+  const sm = summarize(tr); tr.sum = sm;
+  JOURNAL.push(sm); if (JOURNAL.length > 5000) JOURNAL.splice(0, JOURNAL.length - 5000); LS.set('sg_journal', JOURNAL);
+  if (key === SYM) syncOrderInputs();
+  renderJournal();
+  toast(t('toast_closed', TR.mode === 'stock' ? '' : sideName(tr.side), SYMS[key].name, fU(sm.net, TR.cur), sm.R != null ? ' (' + (sm.R >= 0 ? '+' : '−') + fx(Math.abs(sm.R), 1) + 'R)' : '').replace('  ', ' '), 3500);
+}
+function summarize(tr){
+  const ent = tr.fills.filter(f => f.side === tr.side), ex = tr.fills.filter(f => f.side !== tr.side), sy = SYMS[tr.sym], m = sy.mult;
+  const vw = a => a.reduce((s, f) => s + f.px * f.qty, 0) / a.reduce((s, f) => s + f.qty, 0);
+  const net = tr.realized - tr.fees, risk = tr.initSL != null ? Math.abs(tr.entry - tr.initSL) * tr.initQty * m : null;
+  const D = MK[tr.sym] ? MK[tr.sym].DS : {}, ds = D[tr.tf] || D['60'] || D['D'];
+  return {id: tr.id, sess: TR ? TR.id : null, sym: tr.sym, cur: sy.cur, mode: sy.cls, tf: tr.tf, side: tr.side, start: tr.start, end: tr.end, entry: vw(ent), exit: vw(ex), maxQty: tr.maxQty, adds: ent.length - 1,
+    gross: tr.realized, fees: tr.fees, net, R: risk ? net / risk : null, risk, mae: tr.mae, mfe: tr.mfe,
+    bars: ds ? Math.max(1, closedCount(ds, tr.end + 1) - closedCount(ds, tr.start + 1) + 1) : 1, hours: (tr.end - tr.start) / 3600,
+    pct: net / (vw(ent) * tr.maxQty * m) * 100, why: ex.length ? ex[ex.length - 1].why : ''};
+}
+
+/* ---------- đặt lệnh ---------- */
+function readNum(id){ const v = parseFloat($(id).value); return isFinite(v) ? v : null; }
+function market(side){
+  if (!TR || !MKA) return;
+  const key = SYM, sy = SY, lot = sy.lot, stock = TR.mode === 'stock', un = qUnit();
+  let q = normQty(readNum('qty'), lot); if (!(q >= lot)){ toast(t('qty_min', fQ(lot), un)); return; }
+  const px = curPrice(key); if (!isFinite(px)){ toast(t('no_price')); return; }
+  const tm = TR.T - 1, p = posOf(key);
+  let sl = readNum('slIn'), tp = readNum('tpIn');
+  if (stock && side < 0){                       // cổ phiếu: chỉ bán thứ đang có
+    if (!p.qty){ toast(t('no_short', sy.name)); return; }
+    q = Math.min(q, p.qty); p.sl = sl; p.tp = tp;
+    fill(key, -1, q, px, tm, q >= p.qty ? 'close' : 'part'); afterOrder(); return;
+  }
+  if (p.qty && side !== p.side){                // phái sinh: đóng bớt, vượt quá số đang có thì đảo chiều
+    const c = Math.min(q, p.qty), rest = rq(q - c), full = c >= p.qty;
+    if (rest > 0 && !marginOK(key, rest, px, key)) return;
+    p.sl = sl; p.tp = tp;
+    fill(key, side, c, px, tm, full ? (rest > 0 ? 'rev' : 'close') : 'part');
+    if (!(rest > 0)){ afterOrder(); return; }
+    q = rest; sl = null; tp = null;
+  }
+  const np = posOf(key);
+  if (stock){ const cost = px * q * sy.mult + feeSide(key, 1, px, q); if (cost > TR.cash + 1e-6){ toast(t('no_cash', fQ(maxBuy(key, px)), un), 3500); afterOrder(); return; } }
+  else if (np.qty && !marginOK(key, q, px, null)){ afterOrder(); return; }
+  else if (!np.qty && p === np && !marginOK(key, q, px, null)){ afterOrder(); return; }
+  if (!np.qty){
+    if (sl == null && $('autoSL').checked){ const a = curATR(), k = readNum('slK') || 2; if (isFinite(a)) sl = +(px - side * k * a).toFixed(sy.dp); }
+    if (sl != null && (side > 0 ? sl >= px : sl <= px)){ toast(t(side > 0 ? 'sl_below' : 'sl_above', fP(px)), 3000); np.sl = null; afterOrder(); return; }
+    if (tp != null && (side > 0 ? tp <= px : tp >= px)){ toast(t(side > 0 ? 'tp_above' : 'tp_below'), 3000); tp = null; }
+    np.sl = sl; np.tp = tp;
+    fill(key, side, q, px, tm, 'open');
+  } else { np.sl = sl; np.tp = tp; fill(key, side, q, px, tm, 'add'); }
+  afterOrder();
+}
+/* ký quỹ: Σ |KL|·giá·mult·mr sau lệnh không được vượt vốn hiện có. skip = mã sẽ được đóng hết trước (đảo chiều) */
+function marginOK(key, q, px, skip){
+  let need = q * px * SYMS[key].mult * (SYMS[key].mr || 1), e = equity();
+  for (const k of openKeys()){ if (k === skip) continue; const p = TR.pos[k], sy = SYMS[k]; let x = curPrice(k); if (!isFinite(x)) x = p.avg; need += p.qty * x * sy.mult * (sy.mr || 1); }
+  if (need > e + 1e-6){ toast(t('no_margin', fM(need), fM(e)), 3500); return false; }
+  return true;
+}
+function closeQty(key, q, why){ const p = TR.pos[key]; if (!p || !p.qty) return; let px = curPrice(key); if (!isFinite(px)) px = p.avg; fill(key, -p.side, Math.min(q, p.qty), px, TR.T - 1, why); afterOrder(); }
+function afterOrder(){ markEquity(); syncOrderInputs(); saveTR(); updPanel(); renderBasket(); req(); }
+function syncOrderInputs(){ if (!TR) return; const p = posOf(SYM); $('slIn').value = p.sl != null ? p.sl : ''; $('tpIn').value = p.tp != null ? p.tp : ''; }
+function setLine(k, v){ if (!TR) return; posOf(SYM)[k] = v; syncOrderInputs(); saveTR(); updPanel(); req(); }
+$('bLong').onclick = () => market(1);
+$('bShort').onclick = () => market(-1);
+$('bCloseA').onclick = () => { if (TR) closeQty(SYM, posOf(SYM).qty, 'close'); };
+$('bCloseQ').onclick = () => { if (!TR) return; const q = normQty(readNum('qty'), SY.lot); if (q >= SY.lot) closeQty(SYM, q, q >= posOf(SYM).qty ? 'close' : 'part'); };
+$('slIn').onchange = () => setLine('sl', readNum('slIn'));
+$('tpIn').onchange = () => setLine('tp', readNum('tpIn'));
+$('slX').onclick = () => setLine('sl', null);
+$('tpX').onclick = () => setLine('tp', null);
+document.querySelectorAll('#pctRow [data-pct]').forEach(b => b.onclick = () => {
+  if (!TR || TR.mode !== 'stock') return;
+  const px = curPrice(); if (!isFinite(px)){ toast(t('no_price')); return; }
+  const lot = SY.lot, q = rq(Math.floor(maxBuy(SYM, px) * (+b.dataset.pct / 100) / lot + 1e-9) * lot);
+  if (q < lot){ toast(t('no_cash', fQ(maxBuy(SYM, px)), qUnit()), 3000); return; }
+  $('qty').value = q;
+});
+$('s1').onclick = () => stepBars(1); $('s5').onclick = () => stepBars(5); $('s20').onclick = () => stepBars(20);
+$('sPlay').onclick = () => autoTimer ? stopAuto() : startAuto();
+$('spd').onchange = () => { if (autoTimer){ stopAuto(); startAuto(); } };
+function startAuto(){ if (!TR) return; autoTimer = setInterval(() => stepBars(1), +$('spd').value); $('sPlay').textContent = $('mPlay').textContent = '⏸'; $('sPlay').classList.add('on'); $('mPlay').classList.add('on'); }
+function stopAuto(){ if (autoTimer) clearInterval(autoTimer); autoTimer = null; $('sPlay').textContent = $('mPlay').textContent = '▶'; $('sPlay').classList.remove('on'); $('mPlay').classList.remove('on'); }
+
+/* ---------- rổ cổ phiếu ---------- */
+function basketList(){ return TR ? TR.syms : BASKET[SY.mkt] || []; }
+function renderBasket(){
+  const box = $('bkBox'), stock = (TR ? TR.mode : MODE) === 'stock' && !!SY && !!SY.mkt;
+  box.style.display = stock ? '' : 'none'; if (!stock) return;
+  const list = basketList(), cur = SY.cur;
+  let h = `<table><tr><th>${t('bk_th_sym')}</th><th>${t('bk_th_px')}</th><th>${t('bk_th_ch')}</th><th>${t('bk_th_qty')}</th><th>${t('bk_th_pnl')}</th><th></th></tr>`;
+  for (const k of list){
+    const sy = SYMS[k], mk = MK[k]; let px = NaN, ch = NaN;
+    if (mk){
+      const ds = mk.DS[S.tf] || mk.DS['D'];
+      if (TR){   // chỉ dùng nến đã đóng tại TR.T
+        px = priceAt(mk, TR.T); const nc = closedCount(ds, TR.T), j = nc < ds.n && ds.t[nc] < TR.T ? nc - 1 : nc - 2;
+        if (j >= 0 && isFinite(px)) ch = (px / ds.c[j] - 1) * 100;
+      } else { px = ds.c[ds.n - 1]; if (ds.n > 1) ch = (px / ds.c[ds.n - 2] - 1) * 100; }
+    } else if (!LOADING[k] && !sy.missing) loadMarket(k).then(renderBasket, renderBasket);
+    const p = TR && TR.pos[k] && TR.pos[k].qty ? TR.pos[k] : null, u = p && isFinite(px) ? (px - p.avg) * p.qty * sy.mult : null;
+    h += `<tr data-k="${k}" class="click${k === SYM ? ' cur' : ''}" title="${esc(sy.lab[LANG])}"><td><b>${sy.name}</b></td><td>${sy.missing && !mk ? '✕' : fP(px, sy)}</td>` +
+      `<td class="${cls(ch)}">${isFinite(ch) ? fPc(ch) : '–'}</td><td>${p ? fQ(p.qty) : '–'}</td><td class="${u != null ? cls(u) : ''}">${u != null ? fN(u, cur) : '–'}</td>` +
+      `<td><button class="b mini" data-rm="${k}" title="${t('bk_rm_tt')}">×</button></td></tr>`;
+  }
+  $('bkT').innerHTML = h + '</table>';
+  const add = $('bkAdd'), prev = add.value; add.innerHTML = '';
+  for (const k in SYMS){ const sy = SYMS[k]; if (sy.cls !== 'stock' || sy.mkt !== SY.mkt || list.includes(k) || sy.missing) continue; const o = document.createElement('option'); o.value = k; o.textContent = sy.name + ' — ' + sy.lab[LANG]; add.appendChild(o); }
+  if (prev && add.querySelector('option[value="' + prev + '"]')) add.value = prev;
+  $('bkAddB').disabled = !add.options.length;
+  $('bkHint').textContent = t(TR ? 'bk_hint_tr' : 'bk_hint_free');
+  if (!TR) updStart();
+}
+/* thêm mã vào rổ (trước phiên: rổ mặc định; giữa phiên: phải cùng thị trường và có dữ liệu tại T) */
+async function addToBasket(key){
+  const sy = SYMS[key]; if (!sy || sy.cls !== 'stock') return false;
+  const list = basketList(), mkt = TR ? SYMS[TR.syms[0]].mkt : SY.mkt;
+  if (sy.mkt !== mkt){ toast(t('bk_other_mkt'), 3000); return false; }
+  if (list.includes(key)) return true;
+  let mk; try { mk = await loadMarket(key); } catch(e){ renderBasket(); return false; }
+  if (TR){
+    const px = priceAt(mk, TR.T); if (!isFinite(px)){ toast(t('bk_no_data', sy.name), 3000); return false; }
+    TR.syms.push(key); TR.bh0[key] = px; saveTR();
+  } else { BASKET[mkt].push(key); LS.set('sg_basket', BASKET); }
+  renderBasket(); return true;
+}
+function removeFromBasket(key){
+  const list = basketList(), i = list.indexOf(key); if (i < 0) return;
+  if (TR && TR.pos[key] && TR.pos[key].qty){ toast(t('bk_has_pos', SYMS[key].name), 3000); return; }
+  if (list.length <= 1){ toast(t('bk_last')); return; }
+  list.splice(i, 1);
+  if (TR) saveTR(); else LS.set('sg_basket', BASKET);
+  if (key === SYM) setActive(list[0]).catch(() => {}); else renderBasket();
+}
+$('bkT').onclick = e => {
+  const rm = e.target.closest('[data-rm]'); if (rm){ removeFromBasket(rm.dataset.rm); return; }
+  const r = e.target.closest('tr[data-k]'); if (r && r.dataset.k !== SYM) setActive(r.dataset.k).catch(() => renderBasket());
+};
+$('bkAddB').onclick = () => { const k = $('bkAdd').value; if (k) addToBasket(k); };
+
+/* ---------- panel ---------- */
+document.querySelectorAll('#mbar [data-k]').forEach(b => b.onclick = () => $(b.dataset.k).onclick());
+function showMode(){
+  const tr = !!TR;
+  document.body.classList.toggle('tr', tr); $('freeP').style.display = tr ? 'none' : ''; $('trainP').style.display = $('trainP2').style.display = tr ? '' : 'none';
+  $('fab').style.display = $('histBox').style.display = tr ? 'none' : '';
+  $('bLastSum').style.display = !tr && LAST ? '' : 'none';
+  updBanner(); updStart(); if (!tr) renderHistory();
+}
+function updBanner(){
+  const b = $('banner');
+  if (!TR){ b.style.display = 'none'; return; }
+  const hrs = (TR.T - TR.startT) / 3600, el = hrs >= 72 ? (hrs / 24).toFixed(0) + ' ' + t('days_u') : hrs.toFixed(0) + ' ' + t('hours_u');
+  b.style.display = 'block';
+  b.textContent = t('banner', (TR.mode === 'stock' ? SY.name + ' ' : '') + tfLab(S.tf), fFull(TR.T - 1, TR.blind), el);
+}
+function updPanel(){
+  updBanner(); cfgNote(); feeNote();
+  if (!TR || !MKA) return;
+  const stock = TR.mode === 'stock', E = equity(), pnl = E - TR.cash0, kvh = a => a.map(([x, y]) => `<span>${x}</span><span>${y}</span>`).join('');
+  $('tInfo').textContent = TR.blind ? t('hidden_date') : t('start_at', fDate(TR.startT));
+  let ah = `<div class="lab">${t('a_eq')}</div><div class="eq">${fM(E)}</div><div class="pl ${cls(pnl)}">${fU(pnl)} (${fPc(pnl / TR.cash0 * 100)})${fV(1) ? ' · ' + fV(pnl) : ''}</div>`;
+  const ak = [[t('a_cap0'), fM(TR.cash0)]];
+  if (stock){ const inv = E - TR.cash; ak.push([t('a_cash') + ' / ' + t('a_bp'), fM(TR.cash)], [t('k_val'), fM(inv)]); }
+  else { const mu = marginUsed(); ak.push([t('a_margin'), fM(mu)], [t('a_free') + ' / ' + t('a_bp'), fM(E - mu)]); }
+  ak.push([t('a_dd'), '−' + fx((TR.maxDD * 100), 2) + '%']);
+  $('acctKV').innerHTML = ah + '<div class="kv">' + kvh(ak) + '</div>';
+  const p = posOf(SYM), px = curPrice(), kv = [], tr = p.trade, un = qUnit();
+  $('posSym').textContent = stock ? SY.name : '';
+  kv.push([t('k_price'), fP(px)], ['ATR14 (' + tfLab(S.tf) + ')', fP(curATR())]);
+  if (p.qty){
+    const u = (px - p.avg) * p.qty * OZ * p.side, exitFee = feeSide(SYM, -p.side, px, p.qty), netNow = tr.realized + u - tr.fees - exitFee;
+    kv.push([stock ? t('k_pos') : t('k_side'), `<b class="${p.side > 0 ? 'pos' : 'neg'}">${stock ? '' : (p.side > 0 ? 'LONG ' : 'SHORT ')}${fQ(p.qty)} ${un}</b>`], [t('k_avg'), fP(p.avg)]);
+    if (stock) kv.push([t('k_val'), fM(p.qty * px * OZ)]);
+    kv.push([t('k_unreal'), `<span class="${cls(u)}">${fU(u)}</span>`], [t('k_real'), `<span class="${cls(tr.realized)}">${fU(tr.realized)}</span>`],
+      [t('k_fees'), '−' + fM(tr.fees)], [t('k_ifclose'), `<b class="${cls(netNow)}">${fU(netNow)}</b>`]);
+    if (fV(1)) kv.push(['', `<span class="${cls(netNow)}">${fV(netNow)}</span>`]);
+    if (p.sl != null){ const atSL = tr.realized + (p.sl - p.avg) * p.qty * OZ * p.side - tr.fees - feeSide(SYM, -p.side, p.sl, p.qty); kv.push([t('k_ifsl'), `<span class="${cls(atSL)}">${fU(atSL)}</span>`]); }
+    if (tr.initSL != null){ const risk = Math.abs(tr.entry - tr.initSL) * tr.initQty * OZ; if (risk > 0) kv.push([t('k_rnow'), fx((netNow / risk), 2) + ' R']); }
+    kv.push([t('k_adds'), t('k_adds_v', tr.fills.filter(f => f.side === tr.side).length - 1)], [t('k_hold'), Math.round((TR.T - tr.start) / 3600) + ' ' + t('hours_u')]);
+    $('mpos').innerHTML = `<span class="${p.side > 0 ? 'pos' : 'neg'}">${stock ? '' : (p.side > 0 ? 'L' : 'S')}${fQ(p.qty)}</span> <span class="${cls(netNow)}">${fN(netNow)}</span>`;
+  } else { kv.push([t('k_pos'), t('k_flat')]); $('mpos').textContent = fP(px); }
+  $('posKV').innerHTML = kvh(kv);
+  if (stock) $('bpLab').textContent = isFinite(px) ? t('a_bp') + ': ' + fQ(maxBuy(SYM, px)) + ' ' + un : '';
+  renderSessTrades(TR);
+}
+function renderSessTrades(sess){
+  const L = sess.trades, stock = sess.mode === 'stock', cur = sess.cur;
+  if (!L.length){ $('sessT').innerHTML = `<span class="muted">${t('no_trades')}</span>`; return; }
+  const tot = L.reduce((s, x) => s + x.sum.net, 0);
+  $('sessT').innerHTML = `<table><tr><th>#</th><th>${stock ? t('th_sym') : t('th_side')}</th><th>${t('th_qty')}</th><th>${t('th_net')} ${curSym(cur)}</th><th>R</th></tr>` +
+    L.map((x, k) => `<tr data-i="${k}" class="click" title="${t('row_tt')}"><td>${k + 1}</td><td class="${stock ? '' : x.side > 0 ? 'pos' : 'neg'}">${stock ? SYMS[x.sym].name : x.side > 0 ? 'L' : 'S'}</td><td>${fQ(x.sum.maxQty)}</td><td class="${cls(x.sum.net)}">${fN(x.sum.net, cur)}</td><td>${x.sum.R != null ? fx(x.sum.R, 2) : '–'}</td></tr>`).join('') +
+    `<tr><th>Σ</th><th></th><th></th><th class="${cls(tot)}">${fN(tot, cur)}</th><th></th></tr></table>`;
+}
+$('sessT').onclick = e => { const r = e.target.closest('tr[data-i]'), sess = TR || LAST; if (r && sess && sess.trades[+r.dataset.i]) showTrade(sess.trades[+r.dataset.i]); };
+function renderJournal(){
+  if (!SY) return;
+  const cur = curNow(), J = JOURNAL.filter(x => (x.cur || '$') === cur), n = J.length, kvh = a => a.map(([x, y]) => `<span>${x}</span><span>${y}</span>`).join('');
+  if (!n){ $('jStat').innerHTML = kvh([[t('j_n'), 0]]); $('jTab').innerHTML = ''; return; }
+  const w = J.filter(x => x.net > 0), lo = J.filter(x => x.net <= 0), tot = J.reduce((s, x) => s + x.net, 0);
+  const gw = w.reduce((s, x) => s + x.net, 0), gl = -lo.reduce((s, x) => s + x.net, 0), Rs = J.filter(x => x.R != null);
+  let eq = 0, pk = 0, dd = 0; for (const x of J){ eq += x.net; pk = Math.max(pk, eq); dd = Math.min(dd, eq - pk); }
+  const rows = [[t('j_n'), n], [t('j_win'), (w.length / n * 100).toFixed(0) + '%'], [t('j_tot'), `<span class="${cls(tot)}">${fU(tot, cur)}</span>`]];
+  if (fV(1, cur)) rows.push(['', `<span class="${cls(tot)}">${fV(tot, cur)}</span>`]);
+  rows.push([t('j_avg'), fU(tot / n, cur)], [t('j_avgwl'), (w.length ? fN(gw / w.length, cur) : '–') + ' / ' + (lo.length ? fN(-gl / lo.length, cur) : '–')],
+    [t('j_pf'), gl > 0 ? fx((gw / gl), 2) : '∞'], [t('j_r'), Rs.length ? fx((Rs.reduce((s, x) => s + x.R, 0) / Rs.length), 2) + ' R' : '–'],
+    [t('j_dd'), fU(dd, cur)], [t('j_fees'), '−' + fM(J.reduce((s, x) => s + x.fees, 0), null, cur)]);
+  $('jStat').innerHTML = kvh(rows);
+  $('jTab').innerHTML = `<table><tr><th>${t('th_date')}</th><th>${t('th_sym')}</th><th>${t('th_tf')}</th><th></th><th>${t('th_net')} ${curSym(cur)}</th><th>R</th></tr>` +
+    J.slice(-15).reverse().map(x => { const sy = SYMS[x.sym]; return `<tr><td>${jHid(x) ? t('hidden_date') : fDS(x.start)}</td><td>${sy ? sy.name : esc(x.sym || '')}</td><td>${tfLab(x.tf, sy || SY)}</td><td class="${x.side > 0 ? 'pos' : 'neg'}">${x.mode === 'stock' ? '' : x.side > 0 ? 'L' : 'S'}${fQ(x.maxQty)}</td><td class="${cls(x.net)}">${fN(x.net, cur)}</td><td>${x.R != null ? fx(x.R, 2) : '–'}</td></tr>`; }).join('') +
+    '</table>' + `<div class="muted">${n > 15 ? t('j_last15', n) + ' · ' : ''}${t('j_cur_note', curSym(cur))}</div>`;
+}
+function jHid(x){ return !!(TR && TR.blind && x.sess === TR.id); }       // lệnh của phiên đang ẩn ngày: chưa được lộ ngày thật
+$('bCsv').onclick = () => {
+  const BOM = String.fromCharCode(0xFEFF), q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
+  const rows = JOURNAL.map(x => { const sy = SYMS[x.sym] || SY, dp = sy.dp, md = x.cur === 'đ' ? 0 : 2;
+    const hid = jHid(x);
+    return [sy.name, hid ? t('hidden_date') : fFull(x.start), hid ? t('hidden_date') : fFull(x.end), tfLab(x.tf, sy), x.mode === 'stock' ? t('b_buy') : x.side > 0 ? 'LONG' : 'SHORT', +(+x.maxQty).toFixed(4), x.adds, x.entry.toFixed(dp), x.exit.toFixed(dp), x.gross.toFixed(md), x.fees.toFixed(md), x.net.toFixed(md),
+      x.cur === 'đ' ? 'VND' : 'USD', x.R != null ? x.R.toFixed(2) : '', x.mae.toFixed(md), x.mfe.toFixed(md), x.hours.toFixed(1), x.why ? t('why_' + x.why) : ''].map(q).join(','); });
+  const text = BOM + t('csv_head') + '\n' + rows.join('\n'), name = 'stockgym_journal.csv';
+  if (window.AndroidApp){                                                          // trong app Android: lưu vào Download
+    let r = ''; try { r = String(AndroidApp.saveText(name, text) || ''); } catch(e){ r = 'err:' + (e && e.message || e); }
+    toast(r.startsWith('ok:') ? t('csv_saved', r.slice(3)) : r.startsWith('err:') ? t('csv_fail', r.slice(4)) : r, 4000); return; }   // trong app Android: lưu vào Download
+  const blob = new Blob([text], {type: 'text/csv'}), a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href);
+};
+$('bJClr').onclick = () => { if (JOURNAL.length && confirm(t('confirm_jclr', JOURNAL.length))){ JOURNAL = []; LS.set('sg_journal', JOURNAL); renderJournal(); } };
+
+/* cài đặt phí (theo từng mã) */
+function cfgUI(){
+  if (!SY) return;
+  $('cfComm').value = +CFG.comm.toFixed(4); $('cfSlip').value = +CFG.slip.toFixed(4); $('cfTax').value = +CFG.tax.toFixed(4); $('cfFx').value = FX_VND;
+  $('cfCommU').textContent = t('cf_comm_u', curSym(SY.cur), qUnit());
+  $('taxRow').style.display = SY.cls === 'stock' || CFG.tax ? '' : 'none';
+  $('fxRow').style.display = LANG === 'vi' && SY.cur === '$' ? '' : 'none';
+  cfgNote();
+}
+/* ví dụ phí ở giá tham chiếu: đang training thì CHỈ dùng giá tại TR.T (không lộ giá cuối dữ liệu) */
+function feeNote(){
+  const e = $('feeNote'); if (!e) return;
+  const d = DS && (DS['60'] || DS['D']); if (!SY || !d || !MKA){ e.textContent = ''; return; }
+  const ref = TR ? priceAt(MKA, TR.T) : d.c[d.n - 1]; if (!isFinite(ref) || ref <= 0){ e.textContent = ''; return; }
+  const c = cfgOf(SYM), lot = SY.lot, rt = feeSide(SYM, 1, ref, lot) + feeSide(SYM, -1, ref, lot), pct = rt / (ref * SY.mult * lot) * 100;
+  const tr = x => fx(x, 4).replace(/([.,]\d*?[1-9])0+$|[.,]0+$/, '$1'), parts = [];
+  if (c.comm) parts.push(t('fee_p_comm', fM(c.comm, null, SY.cur)));
+  if (c.slip) parts.push(t('fee_p_slip', tr(c.slip)));
+  if (c.tax) parts.push(t('fee_p_tax', tr(c.tax)));
+  e.innerHTML = '<b>' + esc(t('fee_on')) + '</b><br>' + esc(t('fee_tot', fx(pct, pct < 0.1 ? 3 : 2), fM(rt, null, SY.cur), fQ(lot) + ' ' + qUnit())) + (parts.length ? '<br>' + esc('(' + parts.join(' + ') + ')') : '');
+}
+function cfgNote(){
+  const e = $('cfNote'); if (!e || !SY) return;
+  const d = DS && (DS['60'] || DS['D']); if (!d || !MKA){ e.textContent = ''; return; }
+  const ref = TR ? priceAt(MKA, TR.T) : d.c[d.n - 1]; if (!isFinite(ref) || ref <= 0){ e.textContent = ''; return; }
+  const lot = SY.lot, fb = feeSide(SYM, 1, ref, lot), fs = feeSide(SYM, -1, ref, lot);
+  e.textContent = t('cf_note', fP(ref), fM(fb, null, SY.cur), fM(fs, null, SY.cur), fQ(lot) + ' ' + qUnit(), fx((fb / (ref * OZ * lot) * 100), 4), fM(fb + fs, null, SY.cur));
+}
+for (const id of ['cfComm', 'cfSlip', 'cfTax', 'cfFx']) $(id).onchange = () => {
+  const num = (i, d) => { const v = parseFloat($(i).value); return isFinite(v) && v >= 0 ? v : d; };
+  CFGS[SYM] = CFG = {comm: num('cfComm', 0), slip: num('cfSlip', 0), tax: num('cfTax', 0)}; LS.set('sg_cfg_' + SYM, CFG);
+  const fx = num('cfFx', 0); if (fx > 0){ FX_VND = fx; LS.set('sg_fx', fx); }
+  cfgUI(); updPanel(); renderJournal();
+};
+$('cfReset').onclick = () => { CFGS[SYM] = CFG = Object.assign({}, SY.fee); LS.del('sg_cfg_' + SYM); FX_VND = FX_VND0; LS.del('sg_fx'); cfgUI(); updPanel(); renderJournal(); };
+
+/* ---------- modal chung ---------- */
+let MODAL_ID = null, MODAL_ONCLOSE = null;
+function openModal(id, html, opt){
+  opt = opt || {};
+  const prev = MODAL_ONCLOSE; MODAL_ONCLOSE = null; if (prev && MODAL_ID !== id) prev();
+  MODAL_ID = id; MODAL_ONCLOSE = opt.onClose || null;
+  const box = $('mbox'); box.className = opt.wide ? 'wide' : '';
+  box.innerHTML = `<button class="mx" id="mX" title="${esc(t('close'))}">×</button>` + html;
+  $('modal').style.display = 'flex'; box.scrollTop = 0;
+  $('mX').onclick = closeModal;
+}
+function closeModal(){ const f = MODAL_ONCLOSE; MODAL_ONCLOSE = null; MODAL_ID = null; $('modal').style.display = 'none'; if (f) f(); }
+$('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); };
+function copyText(s){
+  const old = () => { try { const ta = document.createElement('textarea'); ta.value = s; ta.style.cssText = 'position:fixed;left:0;top:0;opacity:0'; document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return !!ok; } catch(e){ return false; } };
+  try { if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(s).then(() => true, old); } catch(e){}
+  return Promise.resolve(old());
+}
+
+/* chi tiết 1 lệnh (bấm dòng trong bảng "Lệnh trong phiên" hoặc trong bảng tổng kết); back = hàm quay lại bảng tổng kết */
+function showTrade(tr, back){
+  const s = tr.sum, sy = SYMS[s.sym] || SY, cur = s.cur || sy.cur, stock = s.mode === 'stock', un = t(sy.qu), tfl = tfLab(s.tf, sy), bl = blindNow(), ff = x => fFull(x, bl);
+  const rows = [[t('sm_in'), ff(s.start) + ' · ' + fP(s.entry, sy) + (s.adds ? t('sm_avg_adds', s.adds) : '')], [t('sm_out'), ff(s.end) + ' · ' + fP(s.exit, sy) + ' · ' + (s.why ? t('why_' + s.why) : '')],
+    [t('sm_maxq'), fQ(s.maxQty) + ' ' + un], [t('sm_hold'), t('sm_hold_v', fx(s.hours, 1), s.bars, tfl)],
+    [t('sm_gross'), `<span class="${cls(s.gross)}">${fU(s.gross, cur)}</span>`], [t('sm_fee'), '−' + fM(s.fees, null, cur)],
+    [t('sm_net'), `<b class="${cls(s.net)}">${fU(s.net, cur)}${fV(1, cur) ? ' · ' + fV(s.net, cur) : ''}</b>`], [t('sm_pct'), fx(s.pct, 2) + '%'],
+    [t('sm_risk'), s.risk != null ? fM(s.risk, null, cur) : t('sm_norisk')], [t('sm_r'), s.R != null ? fx(s.R, 2) + ' R' : '–'],
+    [t('sm_mae'), `<span class="neg">${fU(s.mae, cur)}</span>`], [t('sm_mfe'), `<span class="pos">${fU(s.mfe, cur)}</span>`],
+    [t('sm_giveback'), s.mfe > 0 ? fM(s.mfe - s.gross, null, cur) : '–']];
+  const fills = tr.fills.map(f => `<tr><td>${ff(f.t)}</td><td class="${f.side > 0 ? 'pos' : 'neg'}">${f.side > 0 ? t('buy') : t('sell')} ${fQ(f.qty)}</td><td>${fP(f.px, sy)}</td><td>${f.why ? t('why_' + f.why) : ''}</td><td>${cur === 'đ' ? fInt(f.fee) : fx(f.fee, 2, true)}</td></tr>`).join('');
+  openModal('trade', `<h2>${t('sm_title', stock ? '' : (s.side > 0 ? 'LONG' : 'SHORT'), sy.name).replace('  ', ' ').trim()}</h2><div class="netbig ${cls(s.net)}">${fU(s.net, cur)}</div>
+    <div class="kv">${rows.map(([a, b]) => `<span>${a}</span><span>${b}</span>`).join('')}</div>
+    <h3 style="margin-top:14px">${t('sm_fills')}</h3><div class="tw"><table><tr><th>${t('sm_time')}</th><th>${t('sm_order')}</th><th>${t('sm_px')}</th><th>${t('sm_why')}</th><th>${t('sm_feecol')} ${curSym(cur)}</th></tr>${fills}</table></div>
+    <div class="mbtns"><button class="b pri" id="mCont">${back ? t('se_back') : t('close')}</button></div>`);
+  $('mCont').onclick = back || closeModal;
+}
+
+/* ---------- tổng kết phiên ---------- */
+/* các mã dùng cho đường mua-và-giữ: rổ lúc bắt đầu phiên, có giá tại mốc bắt đầu và đã nạp dữ liệu */
+function bhKeys(sess){ return (sess.syms0 || sess.syms).filter(k => MK[k] && sess.bh0 && sess.bh0[k] > 0); }
+/* giá trị mua-và-giữ tại T: chia đều vốn đầu cho các mã, không đòn bẩy, không phí. Chỉ gọi cho phiên ĐÃ kết thúc với T ≤ endT. */
+function bhAt(sess, T){
+  let s = 0, n = 0;
+  for (const k of bhKeys(sess)){ const px = priceAt(MK[k], T); if (isFinite(px)){ s += px / sess.bh0[k]; n++; } }
+  return n ? sess.cash0 * s / n : NaN;
+}
+function sessStats(sess){
+  const L = sess.trades.map(x => x.sum), n = L.length, w = L.filter(x => x.net > 0), lo = L.filter(x => x.net <= 0);
+  const gw = w.reduce((s, x) => s + x.net, 0), gl = -lo.reduce((s, x) => s + x.net, 0), Rs = L.filter(x => x.R != null);
+  const eqv = sess.equity != null ? sess.equity : sess.cash0, pnl = eqv - sess.cash0, ret = pnl / sess.cash0 * 100;
+  const bhE = bhAt(sess, sess.endT != null ? sess.endT : sess.T), bh = isFinite(bhE) ? (bhE / sess.cash0 - 1) * 100 : null;
+  let best = null, worst = null; const by = {};
+  for (const x of L){
+    if (!best || x.net > best.net) best = x; if (!worst || x.net < worst.net) worst = x;
+    const o = by[x.sym] || (by[x.sym] = {n: 0, net: 0, w: 0}); o.n++; o.net += x.net; if (x.net > 0) o.w++;
+  }
+  return {n, win: n ? w.length / n * 100 : null, pf: gl > 0 ? gw / gl : gw > 0 ? Infinity : null, avgW: w.length ? gw / w.length : null, avgL: lo.length ? -gl / lo.length : null, best, worst,
+    avgR: Rs.length ? Rs.reduce((s, x) => s + x.R, 0) / Rs.length : null, dd: (sess.maxDD || 0) * 100, fees: L.reduce((s, x) => s + x.fees, 0),
+    inPos: sess.bars ? (sess.barsIn || 0) / sess.bars * 100 : null, bars: sess.bars || 0, pnl, ret, bh, vs: bh != null ? ret - bh : null, by};
+}
+const pfTxt = pf => pf == null ? '–' : isFinite(pf) ? fx(pf, 2) : '∞';
+const sessNames = sess => sess.syms.map(k => SYMS[k] ? SYMS[k].name : String(k));
+function sessText(sess, st){
+  const tfl = tfLab(sess.tf, SYMS[sess.syms[0]] || SY);
+  return ['StockGym · ' + sessNames(sess).join(', ') + ' · ' + tfl + ' · ' + fDate(sess.startT) + ' → ' + fDate(sess.endT) + ' (' + t('se_bars_v', st.bars) + ')',
+    t('share_res') + ': ' + fU(st.pnl, sess.cur) + ' (' + fPc(st.ret) + ')' + (st.bh != null ? ' · ' + t('se_bh') + ': ' + fPc(st.bh) : ''),
+    t('share_tr', st.n, st.win != null ? st.win.toFixed(0) + '%' : '–', pfTxt(st.pf), fx(st.dd, 2)),
+    'https://stockgym.github.io/'].join('\n');
+}
+/* đường vốn (từ sess.eq) + đường mua-và-giữ; trục ngang theo số bước nến */
+function drawEqCurve(c, sess){
+  if (!c || !c.getContext || !sess) return;
+  const r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1, w = r.width, h = r.height; if (!(w > 0 && h > 0)) return;
+  c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+  const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  const c0 = sess.cash0, E = sess.eq.length > 1 ? sess.eq : [[sess.startT, c0], [sess.endT || sess.startT, sess.equity != null ? sess.equity : c0]];
+  const n = E.length, B = E.map(p => bhAt(sess, p[0]));
+  let mn = c0, mx = c0;
+  for (let i = 0; i < n; i++){ mn = Math.min(mn, E[i][1]); mx = Math.max(mx, E[i][1]); if (isFinite(B[i])){ mn = Math.min(mn, B[i]); mx = Math.max(mx, B[i]); } }
+  const pad = (mx - mn) * 0.08 || c0 * 0.01, lo = mn - pad, hi = mx + pad;
+  const X0 = 8, X1 = w - 64, Y0 = 6, Y1 = h - 22, x = i => X0 + i / (n - 1) * (X1 - X0), y = v => Y0 + (hi - v) / (hi - lo) * (Y1 - Y0);
+  g.font = '11px ui-monospace,Consolas,monospace'; g.textBaseline = 'middle'; g.textAlign = 'left'; g.lineJoin = 'round';
+  const lab = v => { g.fillStyle = '#93a1ae'; g.fillText(fPc((v / c0 - 1) * 100), X1 + 6, y(v)); };
+  g.strokeStyle = '#3a4756'; g.lineWidth = 1; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(X0, y(c0)); g.lineTo(X1, y(c0)); g.stroke(); g.setLineDash([]);
+  lab(c0); if (Math.abs(y(mx) - y(c0)) > 14) lab(mx); if (Math.abs(y(mn) - y(c0)) > 14) lab(mn);
+  const line = (val, col, lw) => { g.strokeStyle = col; g.lineWidth = lw; g.beginPath(); let on = false;
+    for (let i = 0; i < n; i++){ const v = val(i); if (!isFinite(v)) continue; if (on) g.lineTo(x(i), y(v)); else { g.moveTo(x(i), y(v)); on = true; } } g.stroke(); };
+  line(i => B[i], '#e0a43a', 1.4);
+  const up = E[n - 1][1] >= c0;
+  g.beginPath(); g.moveTo(x(0), y(c0)); for (let i = 0; i < n; i++) g.lineTo(x(i), y(E[i][1])); g.lineTo(x(n - 1), y(c0)); g.closePath(); g.fillStyle = up ? 'rgba(38,166,154,.13)' : 'rgba(239,83,80,.13)'; g.fill();
+  line(i => E[i][1], up ? '#26a69a' : '#ef5350', 2);
+  g.fillStyle = '#66737f'; g.textAlign = 'left'; g.fillText(fDate(E[0][0]), X0, h - 10); g.textAlign = 'right'; g.fillText(fDate(E[n - 1][0]), X1, h - 10);
+}
+/* bảng tổng kết khi kết thúc phiên (ngày thật luôn hiện, kể cả khi phiên ẩn ngày) */
+function showSessionEnd(sess){
+  if (!sess) return;
+  const miss = (sess.syms0 || []).filter(k => SYMS[k] && !MK[k] && !SYMS[k].missing && !LOADING[k]);
+  if (miss.length) Promise.all(miss.map(k => loadMarket(k).catch(() => {}))).then(() => { if (MODAL_ID === 'sum' && LAST === sess) showSessionEnd(sess); });
+  const st = sessStats(sess), cur = sess.cur, stock = sess.mode === 'stock', pnl = st.pnl, names = sessNames(sess), tfl = tfLab(sess.tf, SYMS[sess.syms[0]] || SY), nb = bhKeys(sess).length;
+  const stat = (lab, val, c) => `<div class="stat"><small>${lab}</small><b class="${c || ''}">${val}</b></div>`;
+  const cells = [
+    stat(t('se_period'), fDate(sess.startT) + ' → ' + fDate(sess.endT)),
+    stat(t('se_bars'), t('se_bars_v', st.bars) + ' ' + tfl),
+    stat(t('se_trades'), st.n),
+    stat(t('se_win'), st.win != null ? st.win.toFixed(0) + '%' : '–'),
+    stat(t('j_pf'), pfTxt(st.pf)),
+    stat(t('j_avgwl'), (st.avgW != null ? fN(st.avgW, cur) : '–') + ' / ' + (st.avgL != null ? fN(st.avgL, cur) : '–')),
+    stat(t('se_best'), st.best ? fU(st.best.net, cur) : '–', st.best ? cls(st.best.net) : ''),
+    stat(t('se_worst'), st.worst ? fU(st.worst.net, cur) : '–', st.worst ? cls(st.worst.net) : ''),
+    stat(t('j_r'), st.avgR != null ? fx(st.avgR, 2) + ' R' : '–'),
+    stat(t('se_dd'), '−' + fx(st.dd, 2) + '%'),
+    stat(t('j_fees'), '−' + fM(st.fees, null, cur)),
+    stat(t('se_inpos'), st.inPos != null ? st.inPos.toFixed(0) + '%' : '–'),
+    stat(t('se_bh'), st.bh != null ? fPc(st.bh) : '–', st.bh != null ? cls(st.bh) : ''),
+    stat(t('se_vs'), st.vs != null ? fPc(st.vs).replace('%', ' ' + t('pp')) : '–', st.vs != null ? cls(st.vs) : '')];
+  let h = `<h2>${t('se_' + sess.reason)}</h2>
+    <div class="muted">${esc(names.join(', '))} · ${tfl} · ${fDate(sess.startT)} → ${fDate(sess.endT)}</div>
+    <div class="netbig ${cls(pnl)}">${fU(pnl, cur)} <span style="font-size:.68em">(${fPc(st.ret)})</span></div>
+    <div class="muted">${t('se_cap', fM(sess.cash0, null, cur), fM(sess.equity, null, cur))}${fV(1, cur) ? ' · ' + fV(pnl, cur) : ''}</div>
+    <div class="lg"><span><i style="background:${pnl >= 0 ? '#26a69a' : '#ef5350'}"></i>${t('se_you')}</span>${nb ? `<span><i style="background:#e0a43a"></i>${stock ? t('se_bh_s', nb) : t('se_bh_d', esc(names[0]))}</span>` : ''}</div>
+    <canvas id="eqCv"></canvas>
+    <div class="stats">${cells.join('')}</div>
+    <a class="learncta" href="${learnUrl()}" target="_blank" rel="noopener"><span class="ic">📚</span><span class="tx"><b>${t('se_learn_h')}</b><span>${t('se_learn_p')}</span></span><span class="go">${t('se_learn_go')}</span></a>`;
+  const syk = Object.keys(st.by);
+  if (stock && syk.length){
+    syk.sort((a, b) => st.by[b].net - st.by[a].net);
+    h += `<h3>${t('se_by_sym')}</h3><div class="tw"><table><tr><th>${t('th_sym')}</th><th>${t('th_n')}</th><th>${t('j_win')}</th><th>${t('th_net')} ${curSym(cur)}</th><th>${t('se_contrib')}</th></tr>` +
+      syk.map(k => { const o = st.by[k]; return `<tr><td><b>${esc(SYMS[k] ? SYMS[k].name : k)}</b></td><td>${o.n}</td><td>${(o.w / o.n * 100).toFixed(0)}%</td><td class="${cls(o.net)}">${fU(o.net, cur)}</td><td class="${cls(o.net)}">${fPc(o.net / sess.cash0 * 100)}</td></tr>`; }).join('') + '</table></div>';
+  }
+  if (st.n){
+    h += `<h3 style="margin-top:14px">${t('se_trades_h')}</h3><div class="tw"><table><tr><th>#</th><th>${stock ? t('th_sym') : t('th_side')}</th><th>${t('th_in')}</th><th>${t('th_qty')}</th><th>${t('th_net')} ${curSym(cur)}</th><th>%</th><th>R</th><th>${t('th_out')}</th></tr>` +
+      sess.trades.map((x, k) => { const s = x.sum; return `<tr class="click" data-i="${k}"><td>${k + 1}</td><td class="${stock ? '' : s.side > 0 ? 'pos' : 'neg'}">${stock ? esc(SYMS[s.sym] ? SYMS[s.sym].name : s.sym) : s.side > 0 ? 'LONG' : 'SHORT'}</td><td>${fDS(s.start)}</td><td>${fQ(s.maxQty)}</td>` +
+        `<td class="${cls(s.net)}">${fN(s.net, cur)}</td><td class="${cls(s.net)}">${fx(s.pct, 2)}</td><td>${s.R != null ? fx(s.R, 2) : '–'}</td><td>${s.why ? t('why_' + s.why) : ''}</td></tr>`; }).join('') + '</table></div>';
+  } else h += `<div class="muted">${t('se_no_tr')}</div>`;
+  h += `<div class="mbtns"><button class="b pri" id="mNew">${t('b_new')}</button><button class="b" id="mRev">${t('se_review')}</button><button class="b" id="mCopy">${t('se_copy')}</button></div>`;
+  openModal('sum', h, {wide: true}); $('toast').style.display = 'none';
+  drawEqCurve($('eqCv'), sess);
+  $('mRev').onclick = closeModal;
+  $('mNew').onclick = () => { closeModal(); startRandom(); };
+  $('mCopy').onclick = () => copyText(sessText(sess, st)).then(ok => toast(t(ok ? 'copied' : 'copy_fail')));
+  $('mbox').querySelectorAll('tr[data-i]').forEach(r => r.onclick = () => { const tr = sess.trades[+r.dataset.i]; if (tr) showTrade(tr, () => showSessionEnd(sess)); });
+}
+if (window.addEventListener) window.addEventListener('resize', () => { if (MODAL_ID === 'sum' && LAST) drawEqCurve($('eqCv'), LAST); });
+
+/* ---------- lịch sử phiên (sg_sessions, tối đa 200) ---------- */
+let HIST = LS.get('sg_sessions', []); if (!Array.isArray(HIST)) HIST = [];
+function saveHist(sess){
+  if (!(sess.bars > 0) && !sess.trades.length) return;
+  const st = sessStats(sess), r3 = x => x != null && isFinite(x) ? +x.toFixed(3) : null;
+  HIST.push({id: sess.id, at: Date.now(), mode: sess.mode, cur: sess.cur, syms: sess.syms.slice(), tf: sess.tf, startT: sess.startT, endT: sess.endT, cash0: sess.cash0, equity: sess.equity,
+    ret: r3(st.ret), n: st.n, win: r3(st.win), dd: r3(st.dd), bh: r3(st.bh), bars: st.bars, reason: sess.reason});
+  if (HIST.length > 200) HIST.splice(0, HIST.length - 200);
+  LS.set('sg_sessions', HIST);
+}
+function renderHistory(){
+  const A = HIST.filter(x => x && typeof x.ret === 'number' && isFinite(x.ret) && Array.isArray(x.syms)), n = A.length;
+  $('histBtns').style.display = n ? '' : 'none';
+  if (!n){ $('histStat').innerHTML = ''; $('histT').innerHTML = `<span class="muted">${t('hist_none')}</span>`; return; }
+  const w = A.filter(x => x.ret > 0).length, avg = A.reduce((s, x) => s + x.ret, 0) / n, V = A.filter(x => typeof x.bh === 'number');
+  let best = -Infinity, worst = Infinity; for (const x of A){ if (x.ret > best) best = x.ret; if (x.ret < worst) worst = x.ret; }
+  const rows = [[t('hist_n'), n], [t('hist_win'), (w / n * 100).toFixed(0) + '%'], [t('hist_avg'), `<span class="${cls(avg)}">${fPc(avg)}</span>`],
+    [t('hist_bw'), `<span class="${cls(best)}">${fPc(best)}</span> / <span class="${cls(worst)}">${fPc(worst)}</span>`]];
+  if (V.length){ const v = V.reduce((s, x) => s + x.ret - x.bh, 0) / V.length; rows.push([t('hist_vs'), `<span class="${cls(v)}">${fPc(v).replace('%', ' ' + t('pp'))}</span>`]); }
+  $('histStat').innerHTML = rows.map(([a, b]) => `<span>${a}</span><span>${b}</span>`).join('');
+  const nm = x => { const a = x.syms.map(k => SYMS[k] ? SYMS[k].name : String(k)); return esc(a.length > 2 ? a[0] + ' +' + (a.length - 1) : a.join(', ')); };
+  $('histT').innerHTML = `<table><tr><th>${t('th_when')}</th><th>${t('th_sym')}</th><th>${t('th_tf')}</th><th>${t('th_ret')}</th><th>${t('th_n')}</th></tr>` +
+    A.slice(-8).reverse().map(x => `<tr><td>${fLocalDS(+x.at || 0)}</td><td>${nm(x)}</td><td>${esc(tfLab(String(x.tf), SYMS[x.syms[0]] || SY))}</td><td class="${cls(x.ret)}">${fPc(x.ret)}</td><td>${+x.n || 0}</td></tr>`).join('') +
+    '</table>' + (n > 8 ? `<div class="muted">${t('hist_last', 8, n)}</div>` : '');
+}
+$('bHClr').onclick = () => { if (HIST.length && confirm(t('confirm_hclr', HIST.length))){ HIST = []; LS.set('sg_sessions', HIST); renderHistory(); } };
+$('bLastSum').onclick = () => { if (LAST) showSessionEnd(LAST); };
+$('bFab').onclick = () => startRandom();
+
+/* trạng thái chưa có phiên: dòng "Vốn … · mốc ngẫu nhiên" dưới nút bắt đầu */
+function updStart(){
+  if (!SY) return;
+  let s = t('start_sub', fM(CAP[SY.cur], 0, SY.cur));
+  if (MODE === 'stock' && SY.mkt && BASKET[SY.mkt]) s += ' · ' + t('start_sub_bk', BASKET[SY.mkt].length + (BASKET[SY.mkt].includes(SYM) ? 0 : 1));
+  $('fabSub').textContent = $('startSub').textContent = s;
+}
+
+/* ---------- hướng dẫn lần đầu (4 bước), mở lại bằng nút "?" ---------- */
+function showOnb(i){
+  i = Math.max(0, Math.min(3, i || 0));
+  const cap = SY ? fM(CAP[SY.cur], 0, SY.cur) : '', stock = MODE === 'stock';
+  const ills = [
+    `<span class="chip${stock ? '' : ' on'}">${t('mode_deriv')}</span><span class="chip${stock ? ' on' : ''}">${t('mode_stock')}</span><span>→</span><span class="chip"><b>${SY ? esc(SY.name) : ''}</b> ▾</span>`,
+    `<div style="display:flex;flex-direction:column;align-items:center;gap:9px"><span class="pill">${t('b_fab')}</span><span class="muted">${t('onb_cap', cap)}</span></div>`,
+    `<div class="cdl"><i style="height:34px"></i><i class="d" style="height:22px"></i><i style="height:48px"></i><i style="height:40px"></i><i class="d" style="height:30px"></i><i class="h" style="height:60px"></i><i class="h" style="height:60px"></i></div>` +
+      `<span class="chip on">${t('s1')}</span><span class="chip buy">${t('b_buy')}</span><span class="chip sell">${t('b_sell')}</span>`,
+    `<span class="em">📊</span><div><b class="pos" style="font:800 24px var(--mono)">${fPc(5.2)}</b><div class="muted">${t('se_win')} 58% · ${t('se_bh')} ${fPc(2.1)}</div></div>`];
+  const h = `<div class="onbTop"><span class="muted">${t('onb_step', i + 1, 4)}</span><span class="grp seg">${['vi', 'en'].map(l => `<button class="b${l === LANG ? ' on' : ''}" data-ol="${l}">${l.toUpperCase()}</button>`).join('')}</span></div>
+    <div class="ill">${ills[i]}</div><h2>${t('onb' + (i + 1) + '_h')}</h2><p>${t('onb' + (i + 1) + '_p')}</p>
+    <div class="dots">${[0, 1, 2, 3].map(k => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
+    <div class="mbtns">${i < 3 ? `<button class="b" id="oSkip">${t('onb_skip')}</button>` : ''}${i > 0 ? `<button class="b" id="oBack">${t('onb_back')}</button>` : ''}<button class="b pri" id="oNext">${i < 3 ? t('onb_next') : TR ? t('close') : t('b_fab')}</button></div>`;
+  openModal('onb', h, {onClose: () => LS.set('sg_onb', 1)});
+  $('mbox').querySelectorAll('[data-ol]').forEach(b => b.onclick = () => { setLang(b.dataset.ol); showOnb(i); });
+  const sk = $('oSkip'), bk = $('oBack');
+  if (i < 3 && sk) sk.onclick = closeModal;
+  if (i > 0 && bk) bk.onclick = () => showOnb(i - 1);
+  $('oNext').onclick = () => { if (i < 3){ showOnb(i + 1); return; } closeModal(); if (!TR) startRandom(); };
+}
+function firstVisit(){ if (!LS.get('sg_onb', 0)) showOnb(0); }
+$('bHelp').onclick = () => showOnb(0);
+
+/* ---------- góp ý người dùng (VOC). Không gửi gì khi người dùng chưa bấm "Gửi". ---------- */
+const FB = {rating: 0, type: 'feature', text: '', contact: ''};
+function fbCtx(){ return 'v' + VERSION + ' · ' + LANG + ' · ' + MODE + ' · ' + SYM; }     // chỉ gồm: phiên bản trang, ngôn ngữ, chế độ, mã đang xem
+function fbBody(d){
+  return t('fb_rating') + ': ' + (d.rating ? '★'.repeat(d.rating) + '☆'.repeat(5 - d.rating) + ' (' + d.rating + '/5)' : '–') + '\n' + t('fb_type') + ': ' + t('fb_t_' + d.type) + '\n\n' + d.text +
+    (d.contact ? '\n\n' + t('fb_contact') + ': ' + d.contact : '') + '\n\n---\n' + d.ctx;
+}
+function fbIssueUrl(d){
+  const cut = (x, n) => Array.from(x).slice(0, n).join('');              // cắt theo ký tự Unicode, không chẻ đôi emoji (encodeURIComponent sẽ ném lỗi)
+  const title = '[' + t('fb_t_' + d.type) + '] ' + cut(d.text.replace(/\s+/g, ' '), 70), mk = b => FEEDBACK.issues + '?title=' + encodeURIComponent(title) + '&body=' + encodeURIComponent(b);
+  let text = d.text, url = mk(fbBody(d));
+  while (url.length > 6000 && text.length > 100){ text = cut(text, Math.floor(Array.from(text).length * 0.8)); url = mk(fbBody(Object.assign({}, d, {text: text + ' …'}))); }
+  return url;
+}
+function showFeedback(){
+  const types = ['bug', 'feature', 'data', 'other'];
+  const keep = () => { const tx = $('fbText'); if (!tx) return; FB.text = String(tx.value || '').slice(0, 2000); FB.type = types.includes($('fbType').value) ? $('fbType').value : 'other'; FB.contact = String($('fbContact').value || '').slice(0, 120); };
+  openModal('fb', `<h2>${t('fb_h')}</h2><p>${t('fb_desc')}</p>
+    <div class="muted">${t('fb_rating')}</div><div class="stars" id="fbStars">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-s="${n}" title="${esc(t('fb_star_tt', n))}">★</button>`).join('')}</div>
+    <div class="row"><label for="fbType">${t('fb_type')}</label><select id="fbType" class="grow">${types.map(k => `<option value="${k}">${t('fb_t_' + k)}</option>`).join('')}</select></div>
+    <textarea id="fbText" rows="6" maxlength="2000" placeholder="${esc(t('fb_ph'))}"></textarea>
+    <div class="muted" style="text-align:right" id="fbCnt"></div>
+    <div class="row"><label for="fbContact">${t('fb_contact')}</label><input type="text" id="fbContact" class="grow" maxlength="120" placeholder="${esc(t('fb_contact_ph'))}"></div>
+    <div class="muted">${t('fb_ctx')}: <code id="fbCtx"></code></div>
+    <div class="muted" style="margin-top:6px">${t(FEEDBACK.gform ? 'fb_private' : 'fb_public')}</div>
+    <div class="mbtns"><button class="b pri" id="fbSend">${t('fb_send')}</button><button class="b" id="fbCopy">${t('fb_copy')}</button></div>
+    <div id="fbMsg"></div>`, {onClose: keep});
+  const tx = $('fbText'), msg = s => { $('fbMsg').textContent = s; };
+  tx.value = FB.text; $('fbType').value = FB.type; $('fbContact').value = FB.contact; $('fbCtx').textContent = fbCtx();
+  const cnt = () => { $('fbCnt').textContent = String(tx.value || '').length + '/2000'; };
+  const stars = () => $('fbStars').querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.s <= FB.rating));
+  $('fbStars').querySelectorAll('button').forEach(b => b.onclick = () => { FB.rating = FB.rating === +b.dataset.s ? 0 : +b.dataset.s; stars(); });
+  tx.oninput = cnt; cnt(); stars();
+  const read = () => { keep(); return {rating: FB.rating, type: FB.type, text: FB.text.trim(), contact: FB.contact.trim(), ctx: fbCtx()}; };
+  $('fbCopy').onclick = () => { const d = read(); if (!d.text){ msg(t('fb_need')); tx.focus(); return; } copyText(fbBody(d)).then(ok => msg(t(ok ? 'copied' : 'copy_fail'))); };
+  $('fbSend').onclick = () => {
+    const d = read(); if (!d.text){ msg(t('fb_need')); tx.focus(); return; }
+    if (FEEDBACK.gform){
+      const fd = new FormData(); for (const k of ['rating', 'type', 'text', 'contact', 'ctx']) if (FEEDBACK.entry[k]) fd.append(FEEDBACK.entry[k], String(d[k] || ''));
+      msg(t('fb_sending')); $('fbSend').disabled = true;
+      fetch(FEEDBACK.gform, {method: 'POST', mode: 'no-cors', body: fd}).then(() => { FB.text = ''; FB.rating = 0; tx.value = ''; cnt(); stars(); msg(t('fb_sent')); }, () => msg(t('fb_fail'))).then(() => { const b = $('fbSend'); if (b) b.disabled = false; });
+      return;
+    }
+    let url; try { url = fbIssueUrl(d); } catch(e){ copyText(fbBody(d)); msg(t('fb_fail')); return; }
+    copyText(fbBody(d));
+    try { window.open(url, '_blank', 'noopener'); } catch(e){}
+    const m = $('fbMsg'), a = document.createElement('a'); m.textContent = t('fb_opened') + ' ';
+    a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = t('fb_open_link'); m.appendChild(a);
+  };
+}
+$('bFb').onclick = showFeedback;
+function learnUrl(){ return 'learn.html?lang=' + LANG; }
+$('bLearn').onclick = () => { window.open(learnUrl(), '_blank'); };
+
+/* ---------- bộ đếm người dùng: mỗi trình duyệt chỉ cộng 1 lần, lỗi mạng thì bỏ qua. Không chạy trong app / máy cục bộ ---------- */
+var USERS = 0;
+function updCount(){ const e = $('creditN'); if (e) e.textContent = USERS > 0 ? ' · ' + USERS.toLocaleString(LANG === 'vi' ? 'vi-VN' : 'en-US') + ' ' + t('credit_n') : ''; }
+(function(){
+  if (location.protocol !== 'https:' || typeof fetch !== 'function') return;
+  const seen = LS.get('sg_cnt', 0);
+  fetch('https://abacus.jasoncameron.dev/' + (seen ? 'get' : 'hit') + '/stockgym-site/visitors').then(r => r.json())
+    .then(j => { if (j && j.value > 0){ USERS = +j.value; if (!seen) LS.set('sg_cnt', 1); updCount(); } }).catch(() => {});
+})();
+
+/* ---------- khởi động ---------- */
+(async function init(){
+  applyI18n();
+  new ResizeObserver(resize).observe($('cw'));
+  let qs = null; try { qs = new URLSearchParams(location.search).get('s'); } catch(e){}
+  if (!SYMS[qs]) qs = null;
+  { const m = qs ? SYMS[qs].cls : LS.get('sg_mode', 'deriv'); MODE = m === 'stock' ? 'stock' : 'deriv'; bind(qs || defaultSyms(MODE)[0]); buildToolbar(); }
+  let saved = LS.get('sg_session', null);
+  if (saved && !(saved.v === 2 && Array.isArray(saved.syms) && saved.syms.length && saved.syms.every(k => SYMS[k]) && saved.pos && Array.isArray(saved.eq) && isFinite(saved.T))) saved = null;
+  if (saved){   // tiếp tục phiên đang dở: nạp mọi mã của phiên trước
+    try {
+      await Promise.all(saved.syms.map(k => loadMarket(k)));
+      MODE = saved.mode === 'stock' ? 'stock' : 'deriv'; if (saved.tf && TFL.some(x => x.k === saved.tf)) S.tf = saved.tf;
+      TR = saved; if (!TR.draws) TR.draws = {}; if (!TR.bh0) TR.bh0 = {}; if (!Array.isArray(TR.trades)) TR.trades = [];
+      await setActive(TR.syms.includes(TR.active) ? TR.active : TR.syms[0]);
+      syncOrderInputs(); toast(t('restored'), 2500); return;
+    } catch(e){ TR = null; toast(t('restore_fail'), 3500); }
+  }
+  if (await activateFirst([qs, LS.get('sg_sym_' + MODE, null)].concat(defaultSyms(MODE)))){ firstVisit(); return; }
+  for (const m of ['deriv', 'stock']){ MODE = m; if (await activateFirst(defaultSyms(m))){ firstVisit(); return; } }
+  toast(t('load_fail_all'), 8000);
+})();
+</script>
+</body>
+</html>
